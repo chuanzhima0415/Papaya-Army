@@ -11,7 +11,7 @@ import SwiftUI
 struct Papaya_ArmyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+			TabsView()
         }
     }
 }
