@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4B6A85992D9ECA93003D0538 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 4B6A85982D9ECA93003D0538 /* SwiftSoup */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4B223F712D8468AB00C30E5F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B6A85992D9ECA93003D0538 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = "Papaya Army";
 			packageProductDependencies = (
+				4B6A85982D9ECA93003D0538 /* SwiftSoup */,
 			);
 			productName = "Papaya Army";
 			productReference = 4B223F602D8468AA00C30E5F /* Papaya Army.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 4B223F572D8468AA00C30E5F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4B6A85972D9ECA93003D0538 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4B223F612D8468AA00C30E5F /* Products */;
 			projectDirPath = "";
@@ -558,6 +567,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B6A85972D9ECA93003D0538 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.7;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B6A85982D9ECA93003D0538 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B6A85972D9ECA93003D0538 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4B223F582D8468AA00C30E5F /* Project object */;
 }

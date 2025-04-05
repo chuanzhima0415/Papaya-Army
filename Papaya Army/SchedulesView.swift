@@ -8,8 +8,30 @@
 import SwiftUI
 
 struct SchedulesView: View {
+	@State private var races: [Race] = []
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+		NavigationStack {
+			if races.isEmpty {
+				ProgressView("Loading race schedule...")
+			} else {
+				List(races, id: \.round) { race in
+					HStack {
+						Text("\(race.round)")
+						Text("\(race.raceName)")
+						NavigationLink {
+							SpecificRoundRankingView(year: 2024, round: race.round)
+						} label: {
+							Text("")
+						}
+					}
+				}
+			}
+		}
+		.onAppear {
+			RaceManager.shared.retrieveRaceSchedule { races in
+				self.races = races
+			}
+		}
     }
 }
 

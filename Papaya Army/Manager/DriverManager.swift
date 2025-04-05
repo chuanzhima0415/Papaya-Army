@@ -8,24 +8,36 @@
 import Foundation
 
 struct Driver {
-	var name: String
-	var team: String
-	var points: Int /// 每次比赛获得的积分
-	var finishingStatus: String /// 完赛状态
+	var birthday: String = "Uknown"              // 车手生日
+	var nationality: String = "Uknown"           // 车手国籍
+	var driverNumber: Int = -1 					 // 车手的号码
+	var fullName: String = "Unknown" 			 // 车手全名
+	var team: String = "Unknown" 				 // 所属车队
+	var points: Int = -1 						 // 某次比赛获得的积分
+	var finishedStatus: String = "Uknown" 		 // 完赛状态
+	var wins: Int = -1 							 // 整个赛季正赛赢的次数
+	var standingPos = -1 						 // 总积分排名
+	var position = -1 							 // 某场比赛的排名
+	var totalPoints = -1 						 // 整个赛季的总积分数
 }
 
-// 单例模式
+/// 单例模式
 struct DriverManager {
-	var drivers = [Driver]()
 	static let shared = DriverManager()
 	
-	func retrieveDriverRaceResult() -> [Driver] {
-		let driver1 = Driver(name: "VER", team: "Red Bull", points: 26, finishingStatus: "Finished")
-		let driver2 = Driver(name: "NOR", team: "Mclaren", points: 24, finishingStatus: "Finished")
-		let driver3 = Driver(name: "PIA", team: "Mclaren", points: 24, finishingStatus: "Finished")
-		let driver4 = Driver(name: "LAW", team: "Red Bull", points: 24, finishingStatus: "Finished")
-		let driver5 = Driver(name: "HAM", team: "Ferrari", points: 24, finishingStatus: "Finished")
-		let driver6 = DataRequestManager.shared.fetchDriverInfo(driverNumber: 1)
-		return [driver1, driver2, driver3, driver4, driver5, driver6]
+	/// 获取某位车手的详细信息（国籍、生日）
+	/// -Returns: 某位车手的信息
+	func retrieveDriverInfo(driverNumber: Int, completionHandler: @escaping (Driver) -> Void) {
+		DataRequestManager.shared.fetchDriverInfo(driverNumber: driverNumber) { driver in
+			completionHandler(driver)
+		}
+	}
+	
+	/// 获取 StandingsView 的排名
+	/// -Returns: 已排好名的车手数组
+	func retrieveDriverStandings(completionHandler: @escaping ([Driver]) -> Void) {
+		DataRequestManager.shared.fetchDriverStandingsRanking { drivers in
+			completionHandler(drivers)
+		}
 	}
 }

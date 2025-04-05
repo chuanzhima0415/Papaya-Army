@@ -30,11 +30,13 @@ struct DriverRowItemView: View {
 					.imageScale(.large)
 			}
 			HStack {
-				Text("\(driver.name)")
-				Text("\(driver.team)")
+				VStack {
+					Text("\(driver.fullName)")
+					Text("\(driver.team)")
+				}
 				Spacer()
 				VStack {
-					Text("+ \(driver.points)")
+					Text("\(driver.totalPoints)")
 					Text("pts")
 				}
 			}
@@ -45,5 +47,5 @@ struct DriverRowItemView: View {
 }
 
 #Preview {
-	DriverRowItemView(position: 1, driver: DriverManager.shared.retrieveDriverRaceResult().first!)
+	DriverRowItemView(position: 1, driver: Driver(driverNumber: 4, fullName: "Lando Norris", team: "Mclaren", totalPoints: 333))
 }

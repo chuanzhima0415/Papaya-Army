@@ -8,37 +8,53 @@
 import SwiftUI
 
 struct StandingsView: View {
-	@State var drivers = DriverManager.shared.retrieveDriverRaceResult()
+	@State private var drivers = [Driver]()
+	@State private var selectedDriver: Driver?
 	var body: some View {
 		NavigationStack {
-			List {
-				Section {
-					ForEach(0 ..< min(3, drivers.count), id: \.self) {
-						DriverRowItemView(position: $0 + 1, driver: drivers[$0])
-							.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-								Button {
-									// do something
-								} label: {
-									Label("Favourite", systemImage: "star")
+			if drivers.isEmpty {
+				ProgressView("Loading standings...")
+			} else {
+				List {
+					Section {
+						ForEach(0 ..< min(3, drivers.count), id: \.self) {
+							DriverRowItemView(position: drivers[$0].standingPos, driver: drivers[$0])
+								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+									Button {
+										// do something
+									} label: {
+										Label("Good Job!", systemImage: "hand.thumbsup")
+									}
+									Button {
+										// Jump into driver details
+									} label: {
+										Label("Jump to details", systemImage: "info.bubble")
+									}
+
 								}
-							}
+						}
+					}
+					Section {
+						ForEach(3 ..< max(3, drivers.count), id: \.self) {
+							DriverRowItemView(position: drivers[$0].standingPos, driver: drivers[$0])
+								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+									Button {
+										// do something
+									} label: {
+										Label("Good Job!", systemImage: "hand.thumbsup")
+									}
+								}
+						}
 					}
 				}
-				Section {
-					ForEach(3 ..< drivers.count, id: \.self) {
-						DriverRowItemView(position: $0 + 1, driver: drivers[$0])
-							.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-								Button {
-									// do something
-								} label: {
-									Label("Favourite", systemImage: "star")
-								}
-							}
-					}
-				}
+				.listStyle(.insetGrouped)
+				.navigationTitle("Standings")
 			}
-			.listStyle(.insetGrouped)
-			.navigationTitle("Race Results")
+		}
+		.onAppear {
+			DriverManager.shared.retrieveDriverStandings { drivers in
+				self.drivers = drivers
+			}
 		}
 	}
 }
