@@ -10,15 +10,23 @@ import SwiftSoup
 
 struct DataRequestManager {
 	static let shared = DataRequestManager()
-
+	
+	private func dateStringConvertToDate(dateString: String) -> Date! {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "yyyy-MM-dd HH:mm:ssZ"
+		formatter.locale = Locale(identifier: "en_US_POSIX")
+		formatter.timeZone = TimeZone(secondsFromGMT: 0)
+		return formatter.date(from: dateString)
+	}
+	
 	/// 请求一个车手的详细信息
-	func fetchDriverInfo(driverNumber: Int, completionHandler: @escaping (Driver) -> Void) {
+	func fetchDriverInfo(driverNumber: Int, completionHandler: @escaping (DriverManager.DriverDetail) -> Void) {
 		guard let url = URL(string: "https://ergast.com/api/f1/current/driverStandings") else {
 			assertionFailure("url error!")
 			return
 		}
-		let task = URLSession.shared.dataTask(with: url) { data, response, error in
-			guard let data = data, error == nil else {
+		let task = URLSession.shared.dataTask(with: url) { data, _, error in
+			guard let data, error == nil else {
 				assertionFailure("Error: \(error?.localizedDescription ?? "Unknown")")
 				return
 			}
@@ -29,20 +37,11 @@ struct DataRequestManager {
 			do {
 				let document = try SwiftSoup.parse(html)
 				let results = try document.select("driverstanding")
+				var driverDetail: DriverManager.DriverDetail?
 				for result in results {
-					let number = Int(try result.select("permanentnumber").text())!
+					let number = try Int(result.select("permanentnumber").text())!
 					if number == driverNumber {
-						let (
-							birthday,
-							wins,
-							points,
-							nationality,
-							team,
-							firstname,
-							familyname,
-							driverId,
-							standingPosition
-						) = try (
+						let (birthday, wins, totalPoints, nationality, team, firstname, familyname, standingPosition) = try (
 							result.select("driver").select("dateofbirth").text(),
 							result.attr("wins"),
 							result.attr("points"),
@@ -50,47 +49,75 @@ struct DataRequestManager {
 							result.select("constructor").select("name").text(),
 							result.select("driver").select("givenname").text(),
 							result.select("driver").select("familyname").text(),
-							driverNumber,
 							result.attr("position")
 						)
-						completionHandler(Driver(
-							birthday: birthday,
-							nationality: nationality,
-							driverNumber: driverId,
-							fullName: firstname + familyname,
-							team: team,
-							points: Int(points)!,
-							wins: Int(wins)!,
-							standingPos: Int(standingPosition)!
-						))
+						
+						driverDetail = DriverManager
+							.DriverDetail(
+								driverBasicInfo: DriverManager
+									.Driver(
+										nationality: nationality,
+										driverNumber: driverNumber,
+										fullName: firstname + familyname,
+										constructor: team,
+										wins: Int(wins)!,
+										standingPos: Int(standingPosition)!,
+										totalPoints: Int(totalPoints)!
+									),
+								birth: birthday
+							)
 						break
 					}
 				}
+				if let driverDetail { completionHandler(driverDetail) }
 			} catch {
 				assertionFailure("")
 			}
 		}
 		task.resume()
 	}
-
-	/// 请求某站排位赛的排名
-	func fetchQualifyingResults(year: Int, round: Int, completionHandler: @escaping ([Driver]) -> Void) {
-		guard let url = URL(string: "http://ergast.com/api/f1/\(year)/\(round)/qualifying") else {
-			assertionFailure("url error!")
-			return
-		}
-		let task = URLSession.shared.dataTask(with: url) { data, response, error in
-			guard let data = data, error == nil else {
-				assertionFailure("Error: \(error?.localizedDescription ?? "Unknown")")
-				return
-			}
-			// 处理 data & return [Driver]
-		}
-		task.resume() // 发出请求
-	}
-
+	
+	// 请求某站排位赛的排名
+//	func fetchQualifyingResults(year: Int, round: Int, completionHandler: @escaping ([RaceResultManager.QualifyingResult]) -> Void) {
+//		guard let url = URL(string: "https://ergast.com/api/f1/\(year)/\(round)/qualifying") else {
+//			assertionFailure("url error!")
+//			return
+//		}
+//		let task = URLSession.shared.dataTask(with: url) { data, response, error in
+//			guard let data, error == nil else {
+//				assertionFailure("Error: \(error?.localizedDescription ?? "Unknown")")
+//				return
+//			}
+//				// 处理 data & return [Driver]
+//			guard let html = String(data: data, encoding: .utf8) else {
+//				assertionFailure("data cannot convert into html")
+//				return
+//			}
+//			do {
+//				let document = try SwiftSoup.parse(html)
+//				let rankings = try document.select("qualifyingresult")
+//				for ranking in rankings {
+//					let (
+//						qualifyingPos,
+//						firstname,
+//						familyname,
+//						laptime
+//					) = try (
+//						Int(ranking.attr("position"))!,
+//						ranking.select("driver").select("givenname").text(),
+//						ranking.select("driver").select("familyname").text(),
+//						ranking.select("q1").text(), ranking.select("q1").text()
+//					)
+//				}
+//			} catch {
+//				assertionFailure("")
+//			}
+//		}
+//		task.resume() // 发出请求
+//	}
+	
 	/// 请求某站正赛的排名
-	func fetchRaceResults(year: Int, round: Int, completionHandler: @escaping ([Driver]) -> Void) {
+	func fetchRaceResults(year: Int, round: Int, completionHandler: @escaping ([RaceResultManager.RaceResult]) -> Void) {
 		guard let url = URL(string: "https://ergast.com/api/f1/\(year)/\(round)/results") else {
 			assertionFailure("url error!")
 			return
@@ -106,7 +133,7 @@ struct DataRequestManager {
 				return
 			}
 			do {
-				var drivers: [Driver] = []
+				var results: [RaceResultManager.RaceResult] = []
 				let document = try SwiftSoup.parse(html)
 				let rankings = try document.select("result")
 				for ranking in rankings {
@@ -118,31 +145,35 @@ struct DataRequestManager {
 						finishedStatus,
 						team
 					) = try (
-						ranking.attr("position"),
-						ranking.attr("points"),
+						Int(ranking.attr("position"))!,
+						Int(ranking.attr("points"))!,
 						ranking.select("driver").select("givenname").text(),
 						ranking.select("driver").select("familyname").text(),
 						ranking.select("status").text(),
 						ranking.select("constructor").select("name").text()
 					)
-					drivers.append(Driver(
-						fullName: driverFirstName + driverFamilyName,
-						team: team,
-						points: Int(points)!,
-						finishedStatus: finishedStatus,
-						position: Int(position)!
-					))
+					results
+						.append(
+							RaceResultManager
+								.RaceResult(
+									points: points,
+									finishingStatus: finishedStatus,
+									position: position,
+									driverName: driverFirstName + driverFamilyName,
+									constructor: team
+								)
+						)
 				}
-				completionHandler(drivers)
+				completionHandler(results)
 			} catch {
 				assertionFailure("")
 			}
 		}
 		task.resume() // 发出请求
 	}
-
+	
 	/// 获取今年所有比赛（2024）& 每一场比赛的时间
-	func fetchRacesSchedule(completionHandler: @escaping ([Race]) -> Void) {
+	func fetchRacesSchedule(completionHandler: @escaping ([RaceScheduleManager.RaceSchedule]) -> Void) {
 		guard let url = URL(string: "https://ergast.com/api/f1/current") else { assertionFailure("url error!")
 			return
 		}
@@ -157,86 +188,59 @@ struct DataRequestManager {
 				return
 			}
 			do {
-				var result = [Race]()
+				var schedules = [RaceScheduleManager.RaceSchedule]()
 				let document = try SwiftSoup.parse(html)
 				let races = try document.select("race")
 				for race in races {
-					let (
-						round,
-						raceName,
-						circuitName,
-						country
-					) = try (
-						race.attr("round"),
+					let (round, raceName, circuitName, country) = try (
+						Int(race.attr("round"))!,
 						race.select("racename").text(),
 						race.select("circuitname").text(),
 						race.select("country").text()
 					)
 					// 填比赛时间
-					let firstPractice: (date: String, time: String) = try (
-						race.select("firstpractice").select("date").text(),
-						race.select("firstpractice").select("time").text()
+					let firstPractice: Date = try dateStringConvertToDate(
+						dateString: "\(race.select("firstpractice").select("date").text()) \(race.select("firstpractice").select("time").text())"
 					)
-					let sprint: (date: String, time: String) = try (
-						race.select("sprint").select("date").text(),
-						race.select("sprint").select("time").text()
+					let sprint: Date? = try dateStringConvertToDate(dateString: "\(race.select("sprint").select("date").text()) \(race.select("sprint").select("time").text())")
+					let sprintQualifying: Date? = try sprint == nil ? nil : dateStringConvertToDate(dateString: "\(race.select("secondpractice").select("date").text()) \(race.select("secondpractice").select("time").text())")
+					let qualifying: Date = try dateStringConvertToDate(
+						dateString: "\(race.select("qualifying").select("date").text()) \(race.select("qualifying").select("time").text())"
 					)
-					let sprintQualifying: (date: String, time: String) = sprint != ("", "") ? try (
-						race.select("secondpractice").select("date").text(),
-						race.select("secondpractice").select("time").text()
-					) : ("", "")
-					let qualifying: (date: String, time: String) = try (
-						race.select("qualifying").select("date").text(),
-						race.select("qualifying").select("time").text()
-					)
-					let raceDay: (date: String, time: String) = try (
-						race.select("date").first()!.text(),
-						race.select("time").first()!.text()
-					)
-					let secondPractice: (date: String, time: String) = sprint == ("", "") ? try (
-						race.select("secondpractice").select("date").text(),
-						race.select("secondpractice").select("time").text()
-					) : ("", "")
-					let thirdPractice: (date: String, time: String) = sprint == ("", "") ? try (
-						race.select("thirdpractice").select("date").text(),
-						race.select("thirdpractice").select("time").text()
-					) : ("", "")
-					result.append(Race(
-						country: country,
-						round: Int(round) ?? -1,
-						raceName: raceName,
-						date: (
-							firstPractice.date,
-							secondPractice.date,
-							thirdPractice.date,
-							qualifying.date,
-							raceDay.date,
-							sprintQualifying.date,
-							sprint.date
-						),
-						time: (
-							firstPractice.time,
-							secondPractice.time,
-							thirdPractice.time,
-							qualifying.time,
-							raceDay.time,
-							sprintQualifying.time,
-							sprint.time
-						),
-						circuitName: circuitName
-					))
+					let raceDay: Date = try dateStringConvertToDate(dateString: "\(race.select("date").first()!.text()) \(race.select("time").first()!.text())")
+					let secondPractice: Date? = try sprint == nil ? nil : dateStringConvertToDate(dateString: "\(race.select("secondpractice").select("date").text()) \(race.select("secondpractice").select("time").text())")
+					let thirdPractice: Date? = try sprint == nil ? nil : dateStringConvertToDate(dateString: "\(race.select("thirdpractice").select("date").text()) \(race.select("thirdpractice").select("time").text())")
+					schedules
+						.append(
+							RaceScheduleManager
+								.RaceSchedule(
+									country: country,
+									round: round,
+									raceName: raceName,
+									raceTime: .init(
+										firstPractice: firstPractice,
+										secondPractice: secondPractice,
+										thirdPractice: thirdPractice,
+										sprintQualifying: sprintQualifying,
+										sprint: sprint,
+										qualifying: qualifying,
+										race: raceDay
+									),
+									circuitName: circuitName
+								)
+						)
 				}
-				completionHandler(result)
+				completionHandler(schedules)
 			} catch {
 				assertionFailure("")
 			}
 		}
 		task.resume()
 	}
-
+	
 	/// 车手总积分统计
 	/// -completionHandler: 为了把该函数里生成的 drivers 传给 retrieveDriverStandings()
-	func fetchDriverStandingsRanking(completionHandler: @escaping ([Driver]) -> Void) {
+	func fetchDriverStandingsRanking(completionHandler: @escaping ([DriverManager.Driver]) -> Void) {
 		guard let url = URL(string: "https://ergast.com/api/f1/current/driverStandings") else {
 			assertionFailure("url error!")
 			return
@@ -252,7 +256,7 @@ struct DataRequestManager {
 				return
 			}
 			do {
-				var drivers = [Driver]()
+				var drivers = [DriverManager.Driver]()
 				let document = try SwiftSoup.parse(html)
 				let standings = try document.select("driverstanding")
 				for standing in standings {
@@ -268,21 +272,21 @@ struct DataRequestManager {
 					) = try (
 						standing.select("givenname").text(),
 						standing.select("familyname").text(),
-						standing.select("permanentnumber").text(),
+						Int(standing.select("permanentnumber").text())!,
 						standing.select("name").text(),
-						standing.attr("points"),
-						standing.attr("wins"),
-						standing.attr("position"),
+						Int(standing.attr("points"))!,
+						Int(standing.attr("wins"))!,
+						Int(standing.attr("position"))!,
 						standing.select("driver").select("nationality").text()
 					)
-					drivers.append(Driver(
+					drivers.append(DriverManager.Driver(
 						nationality: nationality,
-						driverNumber: Int(driverNumber) ?? -1,
+						driverNumber: driverNumber,
 						fullName: firstName + familyName,
-						team: team,
-						wins: Int(wins) ?? -1,
-						standingPos: Int(standingPos) ?? -1,
-						totalPoints: Int(totalPoints) ?? -1
+						constructor: team,
+						wins: wins,
+						standingPos: standingPos,
+						totalPoints: totalPoints
 					))
 				}
 				completionHandler(drivers)

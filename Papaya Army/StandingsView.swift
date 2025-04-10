@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct StandingsView: View {
-	@State private var drivers = [Driver]()
-	@State private var selectedDriver: Driver?
+	let storageFile = StorageManager.FileManagers<[DriverManager.Driver]>(filename: "Standings.json")
+	@State private var drivers = [DriverManager.Driver]()
 	var body: some View {
 		NavigationStack {
 			if drivers.isEmpty {
@@ -52,8 +52,13 @@ struct StandingsView: View {
 			}
 		}
 		.onAppear {
-			DriverManager.shared.retrieveDriverStandings { drivers in
+			if let drivers = storageFile.loadDataFromFileManager() {
 				self.drivers = drivers
+			} else {
+				DriverManager.shared.retrieveDriverStandings {
+					storageFile.saveDataToFileManager($0)
+					self.drivers = $0
+				}
 			}
 		}
 	}

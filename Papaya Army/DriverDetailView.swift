@@ -8,15 +8,23 @@
 import SwiftUI
 
 struct DriverDetailView: View {
+	var fileURL: StorageManager.FileManagers<DriverManager.DriverDetail> {
+		StorageManager.FileManagers(filename: "Driver\(driverNumber)'s detail")
+	}
 	var driverNumber: Int
-	@State var driver: Driver?
+	@State var driverDetailInfo: DriverManager.DriverDetail?
     var body: some View {
 		VStack {
-			Text("\(driver?.fullName ?? "unknown"): \(driver?.nationality ?? "unknown")")
+			Text("\(driverDetailInfo?.driverBasicInfo.fullName ?? "unknown"): \(driverDetailInfo?.driverBasicInfo.nationality ?? "unknown")")
 		}
 		.onAppear {
-			DriverManager.shared.retrieveDriverInfo(driverNumber: driverNumber) { driver in
-				self.driver = driver
+			if let driverDetail = fileURL.loadDataFromFileManager() {
+				self.driverDetailInfo = driverDetail
+			} else {
+				DriverManager.shared.retrieveDriverInfo(driverNumber: driverNumber) {
+					fileURL.saveDataToFileManager($0)
+					self.driverDetailInfo = $0
+				}
 			}
 		}
     }

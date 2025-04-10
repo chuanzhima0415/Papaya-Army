@@ -8,18 +8,21 @@
 import SwiftUI
 
 struct SchedulesView: View {
-	@State private var races: [Race] = []
+	private var fileURL: StorageManager.FileManagers<[RaceScheduleManager.RaceSchedule]> {
+		StorageManager.FileManagers(filename: "Schedules.json")
+	}
+	@State private var schedules: [RaceScheduleManager.RaceSchedule] = []
     var body: some View {
 		NavigationStack {
-			if races.isEmpty {
+			if schedules.isEmpty {
 				ProgressView("Loading race schedule...")
 			} else {
-				List(races, id: \.round) { race in
+				List(schedules, id: \.round) { race in
 					HStack {
 						Text("\(race.round)")
 						Text("\(race.raceName)")
 						NavigationLink {
-							SpecificRoundRankingView(year: 2024, round: race.round)
+							SpecificRaceRankingView(year: 2024, round: race.round, results: [])
 						} label: {
 							Text("")
 						}
@@ -28,8 +31,13 @@ struct SchedulesView: View {
 			}
 		}
 		.onAppear {
-			RaceManager.shared.retrieveRaceSchedule { races in
-				self.races = races
+			if let schedules = fileURL.loadDataFromFileManager() {
+				self.schedules = schedules
+			} else {
+				RaceScheduleManager.shared.retrieveRaceSchedule {
+					fileURL.saveDataToFileManager($0)
+					self.schedules = $0
+				}
 			}
 		}
     }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DriverRowItemView: View {
 	var position: Int
-	var driver: Driver
+	var driver: DriverManager.Driver
 	var body: some View {
 		HStack {
 			switch position {
@@ -32,7 +32,7 @@ struct DriverRowItemView: View {
 			HStack {
 				VStack {
 					Text("\(driver.fullName)")
-					Text("\(driver.team)")
+					Text("\(driver.constructor)")
 				}
 				Spacer()
 				VStack {
@@ -47,5 +47,16 @@ struct DriverRowItemView: View {
 }
 
 #Preview {
-	DriverRowItemView(position: 1, driver: Driver(driverNumber: 4, fullName: "Lando Norris", team: "Mclaren", totalPoints: 333))
+	DriverRowItemView(
+		position: 1,
+		driver: DriverManager.Driver(
+			nationality: "British",
+			driverNumber: 4,
+			fullName: "lando norris",
+			constructor: "Mclaren",
+			wins: 2,
+			standingPos: 1,
+			totalPoints: 62
+		)
+	)
 }
