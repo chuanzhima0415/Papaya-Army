@@ -8,56 +8,63 @@
 import SwiftUI
 
 struct StandingsView: View {
-	let storageFile = StorageManager.FileManagers<[DriverManager.Driver]>(filename: "Standings.json")
-	@State private var drivers = [DriverManager.Driver]()
+	private var fileURL: StorageManager.FileManagers<[Competitor]> {
+		StorageManager.FileManagers(filename: "Standings.json")
+	}
+	var seasonId: String
+	@State private var competitors: [Competitor]?
 	var body: some View {
 		NavigationStack {
-			if drivers.isEmpty {
-				ProgressView("Loading standings...")
-			} else {
+			if let competitors {
 				List {
 					Section {
-						ForEach(0 ..< min(3, drivers.count), id: \.self) {
-							DriverRowItemView(position: drivers[$0].standingPos, driver: drivers[$0])
-								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-									Button {
-										// do something
-									} label: {
-										Label("Good Job!", systemImage: "hand.thumbsup")
+						ForEach(0 ..< min(3, competitors.count), id: \.self) {
+							if let position = competitors[$0].result.position {
+								DriverRowItemView(position: position, competitor: competitors[$0])
+									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+										Button {
+												// do something
+										} label: {
+											Label("Good Job!", systemImage: "hand.thumbsup")
+										}
+										Button {
+												// Jump into driver details
+										} label: {
+											Label("Jump to details", systemImage: "info.bubble")
+										}
+										
 									}
-									Button {
-										// Jump into driver details
-									} label: {
-										Label("Jump to details", systemImage: "info.bubble")
-									}
-
-								}
+							}
 						}
 					}
 					Section {
-						ForEach(3 ..< max(3, drivers.count), id: \.self) {
-							DriverRowItemView(position: drivers[$0].standingPos, driver: drivers[$0])
-								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-									Button {
-										// do something
-									} label: {
-										Label("Good Job!", systemImage: "hand.thumbsup")
+						ForEach(3 ..< max(3, competitors.count), id: \.self) {
+							if let position = competitors[$0].result.position {
+								DriverRowItemView(position: position, competitor: competitors[$0])
+									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+										Button {
+												// do something
+										} label: {
+											Label("Good Job!", systemImage: "hand.thumbsup")
+										}
 									}
-								}
+							}
 						}
 					}
 				}
 				.listStyle(.insetGrouped)
 				.navigationTitle("Standings")
+			} else {
+				ProgressView("Loading Standings...")
 			}
 		}
 		.onAppear {
-			if let drivers = storageFile.loadDataFromFileManager() {
-				self.drivers = drivers
-			} else {
-				DriverManager.shared.retrieveDriverStandings {
-					storageFile.saveDataToFileManager($0)
-					self.drivers = $0
+			Task {
+				if let competitors = fileURL.loadDataFromFileManager() {
+					self.competitors = competitors
+				} else {
+					self.competitors = await CompetitorStandingsManager.shared.retrieveCompetitorStandings(seasonId: seasonId)
+					fileURL.saveDataToFileManager(self.competitors)
 				}
 			}
 		}
@@ -65,5 +72,5 @@ struct StandingsView: View {
 }
 
 #Preview {
-	StandingsView()
+	StandingsView(seasonId: "sr:stage:1107547")
 }

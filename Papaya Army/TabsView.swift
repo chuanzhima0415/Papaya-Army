@@ -14,11 +14,11 @@ struct TabsView: View {
 				.tabItem {
 					Label("main", systemImage: "star")
 				}
-			SchedulesView()
+			GrandPrixSchedulesView()
 				.tabItem {
 					Label("Schedule", systemImage: "calendar.badge.checkmark")
 				}
-			StandingsView()
+			StandingsView(seasonId: "sr:stage:1107547")
 				.tabItem {
 					Label("Standings", systemImage: "trophy.fill")
 				}
