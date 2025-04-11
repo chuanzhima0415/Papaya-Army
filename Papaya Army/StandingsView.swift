@@ -11,6 +11,7 @@ struct StandingsView: View {
 	private var fileURL: StorageManager.FileManagers<[Competitor]> {
 		StorageManager.FileManagers(filename: "Standings.json")
 	}
+
 	var seasonId: String
 	@State private var competitors: [Competitor]?
 	var body: some View {
@@ -18,32 +19,26 @@ struct StandingsView: View {
 			if let competitors {
 				List {
 					Section {
-						ForEach(0 ..< min(3, competitors.count), id: \.self) {
-							if let position = competitors[$0].result!.position {
-								CompetitorRowItemView(position: position, competitor: competitors[$0])
+						ForEach(0 ..< min(3, competitors.count), id: \.self) { index in
+							if let position = competitors[index].result!.position {
+								CompetitorRowItemView(position: position, competitor: competitors[index])
 									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 										Button {
-												// do something
+											// do something
 										} label: {
 											Label("Good Job!", systemImage: "hand.thumbsup")
 										}
-										Button {
-												// Jump into driver details
-										} label: {
-											Label("Jump to details", systemImage: "info.bubble")
-										}
-										
 									}
 							}
 						}
 					}
 					Section {
-						ForEach(3 ..< max(3, competitors.count), id: \.self) {
-							if let position = competitors[$0].result!.position {
-								CompetitorRowItemView(position: position, competitor: competitors[$0])
+						ForEach(3 ..< max(3, competitors.count), id: \.self) { index in
+							if let position = competitors[index].result!.position {
+								CompetitorRowItemView(position: position, competitor: competitors[index])
 									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 										Button {
-												// do something
+											// do something
 										} label: {
 											Label("Good Job!", systemImage: "hand.thumbsup")
 										}
@@ -63,8 +58,8 @@ struct StandingsView: View {
 				if let competitors = fileURL.loadDataFromFileManager() {
 					self.competitors = competitors
 				} else {
-					self.competitors = await CompetitorStandingsManager.shared.retrieveCompetitorStandings(seasonId: seasonId)
-					fileURL.saveDataToFileManager(self.competitors)
+					competitors = await CompetitorStandingsManager.shared.retrieveCompetitorStandings(seasonId: seasonId)
+					fileURL.saveDataToFileManager(competitors)
 				}
 			}
 		}

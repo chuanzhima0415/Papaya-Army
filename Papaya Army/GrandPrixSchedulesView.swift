@@ -18,7 +18,7 @@ struct GrandPrixSchedulesView: View {
 			if let grandPrixSchedules {
 				List(grandPrixSchedules, id: \.id) { grandPrix in
 					HStack {
-						Text("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2024", with: "GP"))")
+						Text("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2024", with: "GP").replacingOccurrences(of: "2024", with: "GP"))")
 							.font(.headline.weight(.bold))
 						NavigationLink {
 							StagesScheduleView(grandPrixId: grandPrix.id)
