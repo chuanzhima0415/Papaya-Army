@@ -32,8 +32,8 @@ struct Competitor: Codable {
 	var competitorId: String /// 车手 id
 	var name: String /// 车手名字
 	var nationality: String /// 车手国籍
-	var team: Constructor /// 所属车队
-	var result: Result
+	var team: Constructor? /// 所属车队
+	var result: Result?
 	var driverName: String {
 		let names = name.components(separatedBy: ", ")
 		return names[1] + " " + names[0]

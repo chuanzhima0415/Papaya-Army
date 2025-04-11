@@ -19,8 +19,8 @@ struct StandingsView: View {
 				List {
 					Section {
 						ForEach(0 ..< min(3, competitors.count), id: \.self) {
-							if let position = competitors[$0].result.position {
-								DriverRowItemView(position: position, competitor: competitors[$0])
+							if let position = competitors[$0].result!.position {
+								CompetitorRowItemView(position: position, competitor: competitors[$0])
 									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 										Button {
 												// do something
@@ -39,8 +39,8 @@ struct StandingsView: View {
 					}
 					Section {
 						ForEach(3 ..< max(3, competitors.count), id: \.self) {
-							if let position = competitors[$0].result.position {
-								DriverRowItemView(position: position, competitor: competitors[$0])
+							if let position = competitors[$0].result!.position {
+								CompetitorRowItemView(position: position, competitor: competitors[$0])
 									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 										Button {
 												// do something

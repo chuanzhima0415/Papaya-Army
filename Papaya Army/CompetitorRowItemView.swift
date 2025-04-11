@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DriverRowItemView: View {
+struct CompetitorRowItemView: View {
 	var position: Int
 	var competitor: Competitor
 	var body: some View {
@@ -32,11 +32,11 @@ struct DriverRowItemView: View {
 			HStack {
 				VStack {
 					Text("\(competitor.driverName)")
-					Text("\(competitor.team.name)")
+					Text("\(competitor.team!.name)")
 				}
 				Spacer()
 				VStack {
-					Text("\(competitor.result.points ?? 0)")
+					Text("\(competitor.result?.points ?? 0)")
 					Text("pts")
 				}
 			}

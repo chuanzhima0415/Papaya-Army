@@ -34,8 +34,20 @@ struct DataRequestManager {
 	}
 	
 	/// 获取某个 competitor 的详细信息
-	func fetchCompetitorDetailInfo(competitorId: String) async {
+	func fetchCompetitorDetailInfo(competitorId: String) async -> CompetitorDetailResponse? {
+		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/competitors/sr%3Acompetitor%3A\(competitorId.replacingOccurrences(of: "sr:competitor:", with: ""))/profile.json?api_key=\(APIKeys.apiKey.rawValue)") else {
+			return nil
+		}
 		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(for: URLRequest(url: url))
+			let decoder = JSONDecoder();
+			let data = try decoder.decode(CompetitorDetailResponse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("JSON decode failed: \(error)")
+			return nil
+		}
 	}
 	
 	func fetchConstructorDetailInfo(constructorId: String) async {

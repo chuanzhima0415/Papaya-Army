@@ -9,6 +9,9 @@ import SwiftUI
 
 /// 列举某一站的所有 stages
 struct StagesScheduleView: View {
+	private var fileURL: StorageManager.FileManagers<[StageSchedule]> {
+		StorageManager.FileManagers(filename: "\(grandPrixId).json")
+	}
 	var grandPrixId: String
 	@State var stagesSchedule: [StageSchedule]?
 	var body: some View {
@@ -29,7 +32,12 @@ struct StagesScheduleView: View {
 		}
 		.onAppear {
 			Task {
-				self.stagesSchedule = await StageScheduleManager.shared.retrieveStageSchedule(grandPrixId: grandPrixId)
+				if let stagesSchedule = fileURL.loadDataFromFileManager() {
+					self.stagesSchedule = stagesSchedule
+				} else {
+					self.stagesSchedule = await StageScheduleManager.shared.retrieveStageSchedule(grandPrixId: grandPrixId)
+					fileURL.saveDataToFileManager(self.stagesSchedule)
+				}
 			}
 		}
 	}
