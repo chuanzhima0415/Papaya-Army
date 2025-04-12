@@ -21,8 +21,10 @@ struct StagesScheduleView: View {
 					HStack {
 						Text("\(stageSchedule.name)")
 							.font(.subheadline.weight(.semibold))
-						NavigationLink("") {
-							StageResultView(stageId: stageSchedule.stageId)
+						if Date() > stageSchedule.endTime {
+							NavigationLink("") {
+								StageResultView(stageId: stageSchedule.stageId)
+							}
 						}
 					}
 				}

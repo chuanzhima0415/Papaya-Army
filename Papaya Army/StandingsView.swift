@@ -21,9 +21,6 @@ struct StandingsView: View {
 					Section {
 						ForEach(0 ..< min(3, competitors.count), id: \.self) { index in
 							if let position = competitors[index].result!.position {
-<<<<<<< HEAD
-								CompetitorRowItemView(position: position, competitor: competitors[index])
-=======
 								HStack {
 									NavigationLink {
 										CompetitorDetailView(competitorId: competitors[index].competitorId)
@@ -32,7 +29,6 @@ struct StandingsView: View {
 											CompetitorRowItemView(position: position, competitor: competitors[index])
 										}
 									}
->>>>>>> 307ed3d (解决了后台从文件读取数据和网络请求数据的一致性问题)
 									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 										Button {
 											// do something
@@ -47,9 +43,6 @@ struct StandingsView: View {
 					Section {
 						ForEach(3 ..< max(3, competitors.count), id: \.self) { index in
 							if let position = competitors[index].result!.position {
-<<<<<<< HEAD
-								CompetitorRowItemView(position: position, competitor: competitors[index])
-=======
 								HStack {
 									NavigationLink {
 										CompetitorDetailView(competitorId: competitors[index].competitorId)
@@ -58,7 +51,6 @@ struct StandingsView: View {
 											CompetitorRowItemView(position: position, competitor: competitors[index])
 										}
 									}
->>>>>>> 307ed3d (解决了后台从文件读取数据和网络请求数据的一致性问题)
 									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 										Button {
 											// do something
@@ -82,15 +74,10 @@ struct StandingsView: View {
 				// 优先加载本地的（尽量不要出现圈圈）
 				if let competitors = fileURL.loadDataFromFileManager() {
 					self.competitors = competitors
-<<<<<<< HEAD
-				} else {
-					competitors = await CompetitorStandingsManager.shared.retrieveCompetitorStandings(seasonId: seasonId)
-=======
 				}
 				let competitors = await CompetitorStandingsManager.shared.retrieveCompetitorStandings(seasonId: seasonId)
 				if self.competitors != competitors {
 					self.competitors = competitors
->>>>>>> 307ed3d (解决了后台从文件读取数据和网络请求数据的一致性问题)
 					fileURL.saveDataToFileManager(competitors)
 				}
 			}

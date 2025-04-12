@@ -19,11 +19,7 @@ struct GrandPrixSchedulesView: View {
 			if let grandPrixSchedules {
 				List(grandPrixSchedules, id: \.id) { grandPrix in
 					HStack {
-<<<<<<< HEAD
-						Text("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2024", with: "GP").replacingOccurrences(of: "2024", with: "GP"))")
-=======
 						Text("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
->>>>>>> 307ed3d (解决了后台从文件读取数据和网络请求数据的一致性问题)
 							.font(.headline.weight(.bold))
 						NavigationLink {
 							StagesScheduleView(grandPrixId: grandPrix.id)
