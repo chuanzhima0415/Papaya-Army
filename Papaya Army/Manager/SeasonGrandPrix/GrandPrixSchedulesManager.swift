@@ -25,13 +25,13 @@ struct GrandPrixSchedulesResponse: Codable {
 	}
 }
 
-struct grandPrixSchedule: Codable {
+struct grandPrixSchedule: Codable, Equatable {
 	var id: String // 该站大奖赛的 stageid
 	var grandPrixName: String // 该站大奖赛的名字
 	var startDate: Date // 整一站大奖赛的开始时间
 	var endDate: Date // 整一站大奖赛的结束时间
 	var status: String // 大奖赛的举办状态
-	var venue: Venue // 大奖赛的举办场地
+	var venue: Venue? // 大奖赛的举办场地
 
 	enum CodingKeys: String, CodingKey {
 		case id, status, venue
@@ -42,7 +42,7 @@ struct grandPrixSchedule: Codable {
 }
 
 /// 每一站比赛的场地
-struct Venue: Codable {
+struct Venue: Codable, Equatable {
 	var curcuitName: String // 赛道名字
 	var country: String // 正赛举行的国家
 	var city: String // 正赛举行的城市

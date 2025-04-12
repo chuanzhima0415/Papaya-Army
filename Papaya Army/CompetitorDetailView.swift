@@ -20,6 +20,7 @@ struct CompetitorDetailView: View {
 				Text("teams: \(teams[0].name)")
 				Text("car_number: \(info.carNumber)")
 				Text("birth_place: \(info.birthPlace)")
+				Text("first pole: \(info.firstPole ?? "--")")
 			} else {
 				ProgressView("Loading Details...")
 			}
@@ -29,8 +30,10 @@ struct CompetitorDetailView: View {
 			Task {
 				if let competitorDetailResponse = fileURL.loadDataFromFileManager() {
 					self.competitorDetailResponse = competitorDetailResponse
-				} else {
-					self.competitorDetailResponse = await CompetitorDetailManager.shared.retrieveCompetitorDetailInfo(competitorId: competitorId)
+				}
+				let competitorDetailResponse = await CompetitorDetailManager.shared.retrieveCompetitorDetailInfo(competitorId: competitorId)
+				if self.competitorDetailResponse != competitorDetailResponse {
+					self.competitorDetailResponse = competitorDetailResponse
 					fileURL.saveDataToFileManager(competitorDetailResponse)
 				}
 			}

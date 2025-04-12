@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+	var seasonId: String
 	var body: some View {
 		HStack {
 			Text("Papaya Army x 10")
@@ -35,5 +36,5 @@ struct ContentView: View {
 }
 
 #Preview {
-	ContentView()
+	ContentView(seasonId: "sr:stage:1189123")
 }

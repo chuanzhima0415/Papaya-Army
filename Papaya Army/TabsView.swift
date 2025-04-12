@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct TabsView: View {
+	var seasonId = "sr:stage:1189123"
 	var body: some View {
 		TabView {
-			ContentView()
+			ContentView(seasonId: seasonId)
 				.tabItem {
 					Label("main", systemImage: "star")
 				}
-			GrandPrixSchedulesView()
+			GrandPrixSchedulesView(seasonid: seasonId)
 				.tabItem {
 					Label("Schedule", systemImage: "calendar.badge.checkmark")
 				}
-			StandingsView(seasonId: "sr:stage:1107547")
+			StandingsView(seasonId: seasonId)
 				.tabItem {
 					Label("Standings", systemImage: "trophy.fill")
 				}

@@ -34,8 +34,10 @@ struct StagesScheduleView: View {
 			Task {
 				if let stagesSchedule = fileURL.loadDataFromFileManager() {
 					self.stagesSchedule = stagesSchedule
-				} else {
-					self.stagesSchedule = await StageScheduleManager.shared.retrieveStageSchedule(grandPrixId: grandPrixId)
+				}
+				let stagesSchedule = await StageScheduleManager.shared.retrieveStageSchedule(grandPrixId: grandPrixId)
+				if self.stagesSchedule != stagesSchedule {
+					self.stagesSchedule = stagesSchedule
 					fileURL.saveDataToFileManager(self.stagesSchedule)
 				}
 			}

@@ -24,7 +24,7 @@ struct StageScheduleResponse: Codable {
 	}
 }
 
-struct StageSchedule: Codable {
+struct StageSchedule: Codable, Equatable {
 	var stageId: String
 	var name: String
 	var startTime: Date

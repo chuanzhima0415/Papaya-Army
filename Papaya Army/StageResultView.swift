@@ -11,9 +11,10 @@ struct StageResultView: View {
 	private var fileURL: StorageManager.FileManagers<StageResult> {
 		StorageManager.FileManagers(filename: "\(stageId).json")
 	}
+
 	var stageId: String
 	@State var stageResult: StageResult?
-    var body: some View {
+	var body: some View {
 		VStack {
 			if let stageResult {
 				List(stageResult.competitors, id: \.competitorId) { competitor in
@@ -32,14 +33,15 @@ struct StageResultView: View {
 			Task {
 				if let stageResult = fileURL.loadDataFromFileManager() {
 					self.stageResult = stageResult
-				} else {
-					let stageResultResponse = await StageResultManager.shared.retrieveStageResult(for: stageId)
-					self.stageResult = stageResultResponse?.stageResult
-					fileURL.saveDataToFileManager(self.stageResult)
+				}
+				let stageResult = await StageResultManager.shared.retrieveStageResult(for: stageId)?.stageResult
+				if self.stageResult != stageResult {
+					self.stageResult = stageResult
+					fileURL.saveDataToFileManager(stageResult)
 				}
 			}
 		}
-    }
+	}
 }
 
 #Preview {

@@ -15,16 +15,16 @@ struct CompetitorDetailManager {
 	}
 }
 
-struct CompetitorDetailResponse: Codable {
+struct CompetitorDetailResponse: Codable, Equatable {
 	var competitor: Competitor
 	var teams: [Constructor]
 	var info: CompetitorDetailInfo
 }
 
-struct CompetitorDetailInfo: Codable {
-	var firstPole: String
-	var firstVictory: String
-	var firstPoints: String
+struct CompetitorDetailInfo: Codable, Equatable {
+	var firstPole: String?
+	var firstVictory: String?
+	var firstPoints: String?
 	var birthday: String
 	var birthPlace: String
 	var carNumber: Int

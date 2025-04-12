@@ -23,7 +23,7 @@ struct StageResultResponse: Codable {
 	}
 }
 
-struct StageResult: Codable {
+struct StageResult: Codable, Equatable {
 	var id: String
 	var name: String
 	var status: String
@@ -41,7 +41,7 @@ struct StageResult: Codable {
 	}
 }
 
-struct Constructor: Codable {
+struct Constructor: Codable, Equatable {
 	var constructorId: String
 	var name: String
 	var nationality: String

@@ -28,7 +28,7 @@ struct CompetitorStandings: Codable {
 	var competitors: [Competitor]
 }
 
-struct Competitor: Codable {
+struct Competitor: Codable, Equatable {
 	var competitorId: String /// 车手 id
 	var name: String /// 车手名字
 	var nationality: String /// 车手国籍
@@ -45,7 +45,7 @@ struct Competitor: Codable {
 	}
 }
 
-struct Result: Codable {
+struct Result: Codable, Equatable {
 	var points: Int?
 	var fastestLap: String?
 	var laps: Int?
