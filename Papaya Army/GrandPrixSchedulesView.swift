@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct Card: Identifiable {
 	var offset: Double
@@ -79,9 +80,10 @@ struct GrandPrixSchedulesView: View {
 								}
 							}
 					)
-					.onLongPressGesture(minimumDuration: 1) { // 2s 后还在按的处理
+					.onLongPressGesture(minimumDuration: 0.5) { // 2s 后还在按的处理
 						showSheet = true
 						pressingCard = card
+						triggerHapticFeedback()
 					} onPressingChanged: { isPressingNow in // 2s 内的处理
 						if isPressingNow {
 							withAnimation {
@@ -91,6 +93,25 @@ struct GrandPrixSchedulesView: View {
 							pressingCard = nil
 						}
 					}
+//					.onLongPressGesture(minimumDuration: 2) {
+//						withAnimation {
+//							pressingCard = card
+//						}
+//					} onPressingChanged: { isPressingNow in
+//						if isPressingNow {
+//							withAnimation {
+//								pressingCard = card
+//							}
+//							
+//							DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//								if pressingCard?.id == card.id {
+//									showSheet = true
+//								}
+//							}
+//						} else {
+//							pressingCard = nil
+//						}
+//					}
 				}
 			} else {
 				ProgressView("Loading...")
@@ -123,6 +144,12 @@ struct GrandPrixSchedulesView: View {
 				}
 			}
 		}
+	}
+	
+	func triggerHapticFeedback() {
+		let generator = UIImpactFeedbackGenerator(style: .heavy)
+		generator.prepare()
+		generator.impactOccurred()
 	}
 }
 
