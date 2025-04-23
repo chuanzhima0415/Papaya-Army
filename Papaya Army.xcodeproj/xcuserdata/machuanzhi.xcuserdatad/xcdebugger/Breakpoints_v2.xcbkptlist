@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "94D181D1-DF55-4E73-AB3E-1154253A7512"
+   uuid = "FC81B122-E2C8-44E8-9966-5C62A80A853D"
    type = "1"
    version = "2.0">
-<<<<<<< HEAD
-=======
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9FF16278-A5BC-4B7D-B52E-2B01A7A00CE1"
+            uuid = "4545971A-9875-448F-A660-F8C9AC737EEC"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Papaya Army/StandingsView.swift"
+            filePath = "Papaya Army/SwipingCardsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "76"
+            endingLineNumber = "76">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
->>>>>>> 307ed3d (解决了后台从文件读取数据和网络请求数据的一致性问题)
 </Bucket>

@@ -10,7 +10,7 @@ import Foundation
 struct GrandPrixSchedulesManager {
 	static let shared = GrandPrixSchedulesManager()
 
-	func retrieveGrandPrixSchedule(seasonId: String) async -> [grandPrixSchedule]? {
+	func retrieveGrandPrixSchedule(seasonId: String) async -> [GrandPrixSchedule]? {
 		let grandPrixSchedulesResponse = await DataRequestManager.shared.fetchGrandPrixSchedules(seasonId: seasonId)
 		return grandPrixSchedulesResponse?.grandPrixSchedules
 	}
@@ -18,14 +18,14 @@ struct GrandPrixSchedulesManager {
 
 /// 某一年的全年比赛日历
 struct GrandPrixSchedulesResponse: Codable {
-	var grandPrixSchedules: [grandPrixSchedule]
+	var grandPrixSchedules: [GrandPrixSchedule]
 
 	enum CodingKeys: String, CodingKey {
 		case grandPrixSchedules = "stages"
 	}
 }
 
-struct grandPrixSchedule: Codable, Equatable {
+struct GrandPrixSchedule: Codable, Equatable {
 	var id: String // 该站大奖赛的 stageid
 	var grandPrixName: String // 该站大奖赛的名字
 	var startDate: Date // 整一站大奖赛的开始时间
