@@ -19,13 +19,14 @@ struct GrandPrixSchedulesView: View {
 	@State private var grandPrixSchedules: [GrandPrixSchedule]? // 每一站的比赛信息
 	@State private var dragAmount = CGSize.zero // 拖动的坐标
 	@State private var cards: [Card] = [
-		Card(offset: 0, id: 0, color: .red, roundIndex: 2),
-		Card(offset: 1, id: 1, color: .yellow, roundIndex: 1),
-		Card(offset: 2, id: 2, color: .green, roundIndex: 0),
+		Card(offset: 0, id: 0, color: .orange, roundIndex: 3),
+		Card(offset: 1, id: 1, color: .red, roundIndex: 2),
+		Card(offset: 2, id: 2, color: .yellow, roundIndex: 1),
+		Card(offset: 3, id: 3, color: .green, roundIndex: 0),
 	]
 	@State private var draggingCard: Card? // 拖动的卡片
 	@State private var pressingCard: Card? // 长按的卡片
-	@State private var showSheet = false // 是否弹出 sheet
+	@State private var showingSheet = false // 是否弹出 sheet
 	private var fileURL: StorageManager.FileManagers<[GrandPrixSchedule]> {
 		StorageManager.FileManagers(filename: "GrandPrixSchedules.json")
 	}
@@ -80,44 +81,29 @@ struct GrandPrixSchedulesView: View {
 								}
 							}
 					)
-					.onLongPressGesture(minimumDuration: 0.5) { // 2s 后还在按的处理
-						showSheet = true
-						pressingCard = card
-						triggerHapticFeedback()
-					} onPressingChanged: { isPressingNow in // 2s 内的处理
-						if isPressingNow {
-							withAnimation {
+					.onLongPressGesture(minimumDuration: 0.2) { // 长按松开后的处理
+						withAnimation {
+							pressingCard = card
+							showingSheet = true
+						}
+					} onPressingChanged: { isPressingNow in // 从不按到按走一次，从按到不按走一次，只要按压变了，都会走的
+						withAnimation(.spring(response: 0.5, dampingFraction: 2, blendDuration: 0)) {
+							if isPressingNow {
 								pressingCard = card
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+									triggerHapticFeedback()
+								}
+							} else {
+								pressingCard = nil
 							}
-						} else {
-							pressingCard = nil
 						}
 					}
-//					.onLongPressGesture(minimumDuration: 2) {
-//						withAnimation {
-//							pressingCard = card
-//						}
-//					} onPressingChanged: { isPressingNow in
-//						if isPressingNow {
-//							withAnimation {
-//								pressingCard = card
-//							}
-//							
-//							DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//								if pressingCard?.id == card.id {
-//									showSheet = true
-//								}
-//							}
-//						} else {
-//							pressingCard = nil
-//						}
-//					}
 				}
 			} else {
 				ProgressView("Loading...")
 			}
 		}
-		.sheet(isPresented: $showSheet, onDismiss: { // 关闭时的操作
+		.sheet(isPresented: $showingSheet, onDismiss: { // 关闭时的操作
 			withAnimation {
 				pressingCard = nil
 			}
@@ -145,9 +131,9 @@ struct GrandPrixSchedulesView: View {
 			}
 		}
 	}
-	
+
 	func triggerHapticFeedback() {
-		let generator = UIImpactFeedbackGenerator(style: .heavy)
+		let generator = UIImpactFeedbackGenerator(style: .medium)
 		generator.prepare()
 		generator.impactOccurred()
 	}
