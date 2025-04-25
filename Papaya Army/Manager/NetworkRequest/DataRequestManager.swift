@@ -50,10 +50,6 @@ struct DataRequestManager {
 		}
 	}
 	
-	func fetchConstructorDetailInfo(constructorId: String) async {
-		
-	}
-	
 	/// 获取某赛季的车手总积分的排行榜信息
 	func fetchCompetitorsStandings(seasonId: String) async -> CompetitorStandingsResponse? {
 		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/sport_events/sr%3Astage%3A\(seasonId.replacingOccurrences(of: "sr:stage:", with: ""))/summary.json?api_key=\(APIKeys.apiKey.rawValue)") else {
@@ -106,3 +102,4 @@ struct DataRequestManager {
 		}
 	}
 }
+

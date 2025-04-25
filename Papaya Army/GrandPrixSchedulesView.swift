@@ -37,105 +37,136 @@ struct GrandPrixSchedulesView: View {
 
 	var seasonid: String
 	var body: some View {
-		ZStack {
-			if let grandPrixSchedules {
-				// ForEach 的 id：
-				// 如果 id 不变 → 认为是同一个视图，属性变化会渐变动画
-				// 如果 id 变了 → 认为是新视图，删除旧视图，新建一个视图
-				ForEach(cards, id: \.id) { card in
-					ZStack { // 一张卡片的 view
-						Rectangle()
-							.fill(card.color)
-							.clipShape(.rect(cornerRadius: 20))
-						VStack {
-							Text("Round: \(card.roundIndex + 1)")
-							Text("\(grandPrixSchedules[card.roundIndex].grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
-						}
-						.font(.headline)
-						.fontWeight(.bold)
-					}
-					.frame(width: 250, height: 250)
-					.scaleEffect(pressingCard?.id == card.id ? 1.12 : 1)
-					.offset(y: card.offset * 8)
-					.offset(draggingCard?.id == card.id ? dragAmount : .zero)
-					.gesture(
-						DragGesture()
-							.onChanged {
-								dragAmount = $0.translation
-								draggingCard = card
+		VStack {
+			Spacer()
+
+			ZStack {
+				if let grandPrixSchedules {
+					// ForEach 的 id：
+					// 如果 id 不变 → 认为是同一个视图，属性变化会渐变动画
+					// 如果 id 变了 → 认为是新视图，删除旧视图，新建一个视图
+					ForEach(cards, id: \.id) { card in
+						ZStack { // 一张卡片的 view
+							Rectangle()
+								.fill(card.color)
+								.clipShape(.rect(cornerRadius: 20))
+							VStack {
+								Text("Round: \(card.roundIndex + 1)")
+								Text("\(grandPrixSchedules[card.roundIndex].grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
 							}
-							.onEnded { _ in
-								withAnimation {
-									dragAmount = .zero
-									draggingCard = nil
+							.font(.headline)
+							.fontWeight(.bold)
+						}
+						.frame(width: 250, height: 250)
+						.scaleEffect(pressingCard?.id == card.id ? 1.12 : 1)
+						.offset(y: card.offset * 8)
+						.offset(draggingCard?.id == card.id ? dragAmount : .zero)
+						.gesture(
+							DragGesture()
+								.onChanged {
+									dragAmount = $0.translation
+									draggingCard = card
+								}
+								.onEnded { _ in
+									withAnimation {
+										dragAmount = .zero
+										draggingCard = nil
 
-									let cardsCount = cards.count
-									var topCard = cards.removeLast()
-									topCard.roundIndex = (topCard.roundIndex + cardsCount) % grandPrixSchedulesCount
-									cards.insert(topCard, at: cards.startIndex)
+										let cardsCount = cards.count
+										var topCard = cards.removeLast()
+										topCard.roundIndex = (topCard.roundIndex + cardsCount) % grandPrixSchedulesCount
+										cards.insert(topCard, at: cards.startIndex)
 
-									// 改变每张卡片的 offset
-									for index in cards.indices {
-										cards[index].offset = Double(index) + 1
+										// 改变每张卡片的 offset
+										for index in cards.indices {
+											cards[index].offset = Double(index) + 1
+										}
 									}
 								}
-							}
-					)
-					.onLongPressGesture(minimumDuration: 0.2) { // 长按松开后的处理
-						withAnimation {
-							pressingCard = card
-							showingSheet = true
-						}
-					} onPressingChanged: { isPressingNow in // 从不按到按走一次，从按到不按走一次，只要按压变了，都会走的
-						withAnimation(.spring(response: 0.5, dampingFraction: 2, blendDuration: 0)) {
-							if isPressingNow {
+						)
+						.onLongPressGesture(minimumDuration: 0.2) { // 长按松开后的处理
+							withAnimation {
 								pressingCard = card
-								DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-									triggerHapticFeedback()
+								showingSheet = true
+							}
+						} onPressingChanged: { isPressingNow in // 从不按到按走一次，从按到不按走一次，只要按压变了，都会走的
+							withAnimation(.spring(response: 0.5, dampingFraction: 2, blendDuration: 0)) {
+								if isPressingNow {
+									pressingCard = card
+									DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+										triggerHapticFeedback()
+									}
+								} else {
+									pressingCard = nil
 								}
-							} else {
-								pressingCard = nil
 							}
 						}
 					}
-				}
-			} else {
-				ProgressView("Loading...")
-			}
-		}
-		.sheet(isPresented: $showingSheet, onDismiss: { // 关闭时的操作
-			withAnimation {
-				pressingCard = nil
-			}
-		}, content: { // 弹出时的操作
-			NavigationStack {
-				if let pressingCard, let grandPrix = grandPrixSchedules?[pressingCard.roundIndex] {
-					StagesScheduleView(grandPrixId: grandPrix.id)
-						.presentationDetents([.medium, .large])
-						.navigationTitle("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
 				} else {
-					ProgressView("Loading...")
+					ProgressView("Loading")
 				}
 			}
-		})
-		.onAppear {
-			Task {
-				if let grandPrixSchedules = fileURL.loadDataFromFileManager() {
-					self.grandPrixSchedules = grandPrixSchedules
+			.sheet(isPresented: $showingSheet, onDismiss: { // 关闭时的操作
+				withAnimation {
+					pressingCard = nil
 				}
-				let grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedule(seasonId: seasonid)
-				if self.grandPrixSchedules != grandPrixSchedules {
-					self.grandPrixSchedules = grandPrixSchedules
-					fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
+			}, content: { // 弹出时的操作
+				NavigationStack {
+					if let pressingCard, let grandPrix = grandPrixSchedules?[pressingCard.roundIndex] {
+						StagesScheduleView(grandPrixId: grandPrix.id)
+							.presentationDetents([.medium, .large])
+							.navigationTitle("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
+					} else {
+						ProgressView("Loading...")
+					}
+				}
+			})
+			.onAppear {
+				Task {
+					if let grandPrixSchedules = fileURL.loadDataFromFileManager() {
+						self.grandPrixSchedules = grandPrixSchedules
+					}
+					let grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedule(seasonId: seasonid)
+					if self.grandPrixSchedules != grandPrixSchedules {
+						self.grandPrixSchedules = grandPrixSchedules
+						fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
+					}
 				}
 			}
+
+			Spacer()
+
+			Button {
+				reshuffleCard()
+			} label: {
+				VStack {
+					Image(systemName: "arrow.clockwise.circle.fill")
+					Text("reshuffle")
+						.font(.headline)
+				}
+			}
+			.font(.system(size: 70))
+			.padding()
 		}
 	}
-
+	
+	/// 制造手机震动
 	func triggerHapticFeedback() {
-		let generator = UIImpactFeedbackGenerator(style: .medium)
+		let generator = UIImpactFeedbackGenerator(style: .heavy)
 		generator.prepare()
 		generator.impactOccurred()
+	}
+	
+	/// 重置卡片
+	func reshuffleCard() {
+		withAnimation {
+			cards = [
+				Card(offset: 0, id: 0, color: .orange, roundIndex: 3),
+				Card(offset: 1, id: 1, color: .red, roundIndex: 2),
+				Card(offset: 2, id: 2, color: .yellow, roundIndex: 1),
+				Card(offset: 3, id: 3, color: .green, roundIndex: 0),
+			]
+		}
 	}
 }
 
