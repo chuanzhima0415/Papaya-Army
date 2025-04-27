@@ -39,6 +39,7 @@ struct GrandPrixSchedulesView: View {
 	var body: some View {
 		VStack {
 			Spacer()
+			Spacer()
 
 			ZStack {
 				if let grandPrixSchedules {
@@ -52,7 +53,9 @@ struct GrandPrixSchedulesView: View {
 								.clipShape(.rect(cornerRadius: 20))
 							VStack {
 								Text("Round: \(card.roundIndex + 1)")
-								Text("\(grandPrixSchedules[card.roundIndex].grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
+								Text(
+									"\(grandPrixSchedules[card.roundIndex].gpName)"
+								)
 							}
 							.font(.headline)
 							.fontWeight(.bold)
@@ -113,9 +116,8 @@ struct GrandPrixSchedulesView: View {
 			}, content: { // 弹出时的操作
 				NavigationStack {
 					if let pressingCard, let grandPrix = grandPrixSchedules?[pressingCard.roundIndex] {
-						StagesScheduleView(grandPrixId: grandPrix.id)
+						StagesScheduleView(grandPrixSchedule: grandPrix)
 							.presentationDetents([.medium, .large])
-							.navigationTitle("\(grandPrix.grandPrixName.replacingOccurrences(of: "Grand Prix 2025", with: "GP").replacingOccurrences(of: "2025", with: "GP"))")
 					} else {
 						ProgressView("Loading...")
 					}
@@ -126,7 +128,7 @@ struct GrandPrixSchedulesView: View {
 					if let grandPrixSchedules = fileURL.loadDataFromFileManager() {
 						self.grandPrixSchedules = grandPrixSchedules
 					}
-					let grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedule(seasonId: seasonid)
+					grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedules()
 					if self.grandPrixSchedules != grandPrixSchedules {
 						self.grandPrixSchedules = grandPrixSchedules
 						fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
@@ -171,6 +173,5 @@ struct GrandPrixSchedulesView: View {
 }
 
 #Preview {
-	GrandPrixSchedulesView(seasonid: "sr:stage:1189123")
-	// 2024："sr:stage:1107547" 2025: "sr:stage:1189123"
+	GrandPrixSchedulesView(seasonid: "2025")
 }

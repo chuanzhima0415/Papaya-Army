@@ -6,100 +6,173 @@
 //
 
 import Foundation
-import SwiftSoup
-
-enum APIKeys: String {
-	case apiKey = "It5XDanKlzbwvyk6ghXBvwzFBiudE843AJ7gzKV1"
-}
 
 struct DataRequestManager {
 	static let shared = DataRequestManager()
 	
-	/// 获取某一年的全年的赛历
-	func fetchGrandPrixSchedules(seasonId: String) async -> GrandPrixSchedulesResponse? {
-		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/sport_events/sr%3Astage%3A\(seasonId.replacingOccurrences(of: "sr:stage:", with: ""))/schedule.json?api_key=\(APIKeys.apiKey.rawValue)") else {
-			assertionFailure("Invalid URL string")
+	/// 获取当年的所有大奖赛行程
+	func fetchCurrentGrandPrixSchedules() async -> GrandPrixSchedulesResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/current") else {
+			assertionFailure("fail to convert into url")
 			return nil
 		}
 		
 		do {
-			let (dataInJson, _) = try await URLSession.shared.data(for: URLRequest(url: url))
-			let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			let decoder = JSONDecoder()
 			let data = try decoder.decode(GrandPrixSchedulesResponse.self, from: dataInJson)
 			return data
 		} catch {
-			assertionFailure("JSON decode failed: \(error)")
+			assertionFailure("Error description: \(error)")
 			return nil
 		}
 	}
 	
-	/// 获取某个 competitor 的详细信息
-	func fetchCompetitorDetailInfo(competitorId: String) async -> CompetitorDetailResponse? {
-		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/competitors/sr%3Acompetitor%3A\(competitorId.replacingOccurrences(of: "sr:competitor:", with: ""))/profile.json?api_key=\(APIKeys.apiKey.rawValue)") else {
+	/// 获取当前赛季的 driver standings
+	func fetchCurrentDriverStandings() async -> DriversStandingsReponse? {
+		guard let url = URL(string: "https://f1api.dev/api/current/drivers-championship") else {
+			assertionFailure("fail to convert into url")
 			return nil
 		}
 		
 		do {
-			let (dataInJson, _) = try await URLSession.shared.data(for: URLRequest(url: url))
-			let decoder = JSONDecoder();
-			let data = try decoder.decode(CompetitorDetailResponse.self, from: dataInJson)
-			return data
-		} catch {
-			assertionFailure("JSON decode failed: \(error)")
-			return nil
-		}
-	}
-	
-	/// 获取某赛季的车手总积分的排行榜信息
-	func fetchCompetitorsStandings(seasonId: String) async -> CompetitorStandingsResponse? {
-		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/sport_events/sr%3Astage%3A\(seasonId.replacingOccurrences(of: "sr:stage:", with: ""))/summary.json?api_key=\(APIKeys.apiKey.rawValue)") else {
-			return nil
-		}
-		
-		do {
-			let (dataInJson, _) = try await URLSession.shared.data(for: URLRequest(url: url))
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
 			let decoder = JSONDecoder()
-			let data = try decoder.decode(CompetitorStandingsResponse.self, from: dataInJson)
+			let data = try decoder.decode(DriversStandingsReponse.self, from: dataInJson)
 			return data
 		} catch {
-			assertionFailure("JSON decode failed: \(error)")
+			assertionFailure("Error description: \(error)")
 			return nil
 		}
 	}
 	
-	/// 每一个 Grand Prix 的所有 Stage & 每一个 Stage 的举办时间等信息
-	func fetchStageSchedule(grandPrixId: String) async -> StageScheduleResponse? {
-		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/sport_events/sr%3Astage%3A\(grandPrixId.replacingOccurrences(of: "sr:stage:", with: ""))/schedule.json?api_key=\(APIKeys.apiKey.rawValue)") else {
+	/// 获取某场正赛的比赛成绩
+	func fetchSpecificRaceResult(year: String, round: Int) async -> RaceResultResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/\(year)/\(round)/race") else {
+			assertionFailure("fail to convert into url")
 			return nil
 		}
 		
 		do {
-			let (dataInJson, _) = try await URLSession.shared.data(for: URLRequest(url: url))
-			let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
-			let data = try decoder.decode(StageScheduleResponse.self, from: dataInJson)
-			return data
-		} catch {
-			assertionFailure("JSON decode failed: \(error)")
-			return nil
-		}
-	}
-	
-	/// 获取某个 stage 的比赛结果
-	func fetchStageResult(stageId: String) async -> StageResultResponse? {
-		guard let url = URL(string: "https://api.sportradar.com/formula1/trial/v2/en/sport_events/sr%3Astage%3A\(stageId.replacingOccurrences(of: "sr:stage:", with: ""))/summary.json?api_key=\(APIKeys.apiKey.rawValue)") else {
-			assertionFailure("Invalid URL string")
-			return nil
-		}
-		
-		do {
-			let (dataInJson, _) = try await URLSession.shared.data(for: URLRequest(url: url))
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
 			let decoder = JSONDecoder()
-			let data = try decoder.decode(StageResultResponse.self, from: dataInJson)
+			let data = try decoder.decode(RaceResultResponse.self, from: dataInJson)
 			return data
 		} catch {
-			assertionFailure("JSON decode failed: \(error)")
+			assertionFailure("Error description: \(error)")
+			return nil
+		}
+	}
+	
+	/// 获取某场排位赛的比赛成绩
+	func fetchQualifyingResults(year: String, round: Int) async -> QualifyingResultResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/\(year)/\(round)/qualy") else {
+			assertionFailure("fail to convert into url")
+			return nil
+		}
+		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
+			let decoder = JSONDecoder()
+			let data = try decoder.decode(QualifyingResultResponse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("Error description: \(error)")
+			return nil
+		}
+	}
+	
+	/// 获取某一站的某一场练习赛成绩
+	func fetchPracticeNResults(year: String, round: Int, n: Int) async -> PracticeResultResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/\(year)/\(round)/fp\(n)") else {
+			assertionFailure("fail to convert into url")
+			return nil
+		}
+		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
+			let decoder = JSONDecoder()
+			let data = try decoder.decode(PracticeResultResponse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("Error description: \(error)")
+			return nil
+		}
+	}
+	
+	func fetchSprintRaceResults(year: String, round: Int) async -> SprintRaceResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/\(year)/\(round)/sprint/race") else {
+			assertionFailure("fail to convert into url")
+			return nil
+		}
+		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
+			let decoder = JSONDecoder()
+			let data = try decoder.decode(SprintRaceResponse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("Error description: \(error)")
+			return nil
+		}
+	}
+	
+	func fetchSprintQualifyingResult(year: String, round: Int) async -> SprintQualifyingResultResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/\(year)/\(round)/sprint/qualy") else {
+			assertionFailure("fail to convert into url")
+			return nil
+		}
+		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
+			let decoder = JSONDecoder()
+			let data = try decoder.decode(SprintQualifyingResultResponse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("Error description: \(error)")
+			return nil
+		}
+	}
+	
+	func fetchCurrentConstructorStandings() async -> ConstructorStandingsResopnse? {
+		guard let url = URL(string: "https://f1api.dev/api/current/constructors-championship") else {
+			assertionFailure("fail to convert into url")
+			return nil
+		}
+		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
+			let decoder = JSONDecoder()
+			let data = try decoder.decode(ConstructorStandingsResopnse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("Error description: \(error)")
+			return nil
+		}
+	}
+	
+	func fetchConstructorInfo(teamId: String) async -> ConstructorInfoResponse? {
+		guard let url = URL(string: "https://f1api.dev/api/current/teams/\(teamId)") else {
+			assertionFailure("fail to convert into url")
+			return nil
+		}
+		
+		do {
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
+			print(dataInJson)
+			let decoder = JSONDecoder()
+			let data = try decoder.decode(ConstructorInfoResponse.self, from: dataInJson)
+			return data
+		} catch {
+			assertionFailure("Error description: \(error)")
 			return nil
 		}
 	}
 }
-

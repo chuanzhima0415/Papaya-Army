@@ -8,36 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-	var seasonId: String
+	@State private var fp2Results: [SprintRaceResult]?
 	var body: some View {
 		VStack {
-			Spacer()
-			HStack {
-				Text("Papaya Army x 10")
-					.font(.largeTitle)
-					.bold()
-					.fontWeight(.black)
-					.italic()
-					.foregroundStyle(.linearGradient(
-						stops: [Gradient.Stop(color: .orange, location: 0.48), Gradient.Stop(color: .black, location: 0.5)],
-						startPoint: .bottomLeading,
-						endPoint: .topTrailing
-					))
-				
-				Image(systemName: "trophy.fill")
-					.imageScale(.large)
-					.symbolRenderingMode(.multicolor)
-					.foregroundStyle(.linearGradient(
-						stops: [Gradient.Stop(color: .orange, location: 0.46), Gradient.Stop(color: .black, location: 0.5)],
-						startPoint: .bottomLeading,
-						endPoint: .topTrailing
-					))
+			Text("hello World")
+		}
+		.onAppear {
+			Task {
+				fp2Results = await SprintRaceResultManager.shared.retrieveSprintRaceResults(year: "2024", round: 5)
 			}
-			.padding()
 		}
 	}
 }
 
 #Preview {
-	ContentView(seasonId: "sr:stage:1189123")
+	ContentView()
 }

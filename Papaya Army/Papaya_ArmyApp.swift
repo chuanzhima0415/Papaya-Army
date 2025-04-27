@@ -11,7 +11,7 @@ import SwiftUI
 struct Papaya_ArmyApp: App {
     var body: some Scene {
         WindowGroup {
-			TabsView()
+			TabsView(seasonId: "2025")
         }
     }
 }

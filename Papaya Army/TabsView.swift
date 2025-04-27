@@ -8,13 +8,9 @@
 import SwiftUI
 
 struct TabsView: View {
-	var seasonId = "sr:stage:1189123"
+	var seasonId: String
 	var body: some View {
 		TabView {
-			ContentView(seasonId: seasonId)
-				.tabItem {
-					Label("main", systemImage: "star")
-				}
 			GrandPrixSchedulesView(seasonid: seasonId)
 				.tabItem {
 					Label("Schedule", systemImage: "calendar.badge.checkmark")
@@ -34,5 +30,5 @@ struct TabsView: View {
 }
 
 #Preview {
-	TabsView()
+	TabsView(seasonId: "2025")
 }

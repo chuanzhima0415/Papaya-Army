@@ -1,15 +1,16 @@
 //
-//  DriverRowItemView.swift
+//  PracticeNResultsRowItemView.swift
 //  Papaya Army
 //
-//  Created by 马传智 on 2025/3/14.
+//  Created by 马传智 on 2025/4/27.
 //
 
 import SwiftUI
 
-struct CompetitorRowItemView: View {
+struct PracticeNResultsRowItemView: View {
 	var position: Int
-	var competitor: Competitor
+	var practiceNResult: PracticeResult
+
 	var body: some View {
 		HStack {
 			switch position {
@@ -31,14 +32,12 @@ struct CompetitorRowItemView: View {
 			}
 			HStack {
 				VStack {
-					Text("\(competitor.driverName)")
-					Text("\(competitor.team!.name)")
+					Text("\(practiceNResult.driver.firstName + " " + practiceNResult.driver.lastName)")
 				}
+
 				Spacer()
-				VStack {
-					Text("\(competitor.result?.points ?? 0)")
-					Text("pts")
-				}
+
+				Text("\(practiceNResult.time ?? "---")")
 			}
 			.font(.headline.weight(.medium))
 		}
@@ -47,5 +46,13 @@ struct CompetitorRowItemView: View {
 }
 
 #Preview {
-	
+	PracticeNResultsRowItemView(
+		position: 1,
+		practiceNResult: PracticeResult(
+			driverId: "xxxx",
+			teamId: "xxxx",
+			time: nil,
+			driver: DriverDetailInfo(firstName: "xxxx", lastName: "xxxx", nationality: "xxx", shortName: "xxxx", birthday: "xxxx", number: 1, url: "xxxx")
+		)
+	)
 }
