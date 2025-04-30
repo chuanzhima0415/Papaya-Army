@@ -37,6 +37,8 @@ struct DriverStandingRowItemView: View {
 					Text("\(driverStanding.points)")
 					Text("pts")
 				}
+//				LottieView(name: .thumbup, loopMode: .loop)
+//					.frame(width: 50, height: 50)
 			}
 			.font(.headline.weight(.medium))
 		}

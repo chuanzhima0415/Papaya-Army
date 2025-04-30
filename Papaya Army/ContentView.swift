@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-	@State private var fp2Results: [SprintRaceResult]?
+	@State private var isLiked = false
 	var body: some View {
 		VStack {
-			Text("hello World")
-		}
-		.onAppear {
-			Task {
-				fp2Results = await SprintRaceResultManager.shared.retrieveSprintRaceResults(year: "2024", round: 5)
+			Button {
+				isLiked.toggle()
+			} label: {
+				Text("tap me")
 			}
+			
+			if isLiked {
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
+					
+			}
+
+			Text("hello world")
 		}
 	}
 }

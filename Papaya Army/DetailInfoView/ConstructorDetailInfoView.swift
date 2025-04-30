@@ -15,6 +15,8 @@ struct ConstructorDetailInfoView: View {
 			if let constructorInfo {
 				Text(constructorInfo.constructorName)
 				Text("driver championships: \(constructorInfo.driversChampionships ?? 0)")
+			} else {
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {
@@ -26,5 +28,5 @@ struct ConstructorDetailInfoView: View {
 }
 
 #Preview {
-	ConstructorDetailInfoView(constructorId: "mclaren")
+	ConstructorDetailInfoView(constructorId: String("mclaren"))
 }

@@ -48,7 +48,7 @@ struct SprintQualifyingResultView: View {
 				}
 				.navigationTitle("Sprint Qualifying")
 			} else {
-				ProgressView("Loading Sprint Qualifying results")
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {

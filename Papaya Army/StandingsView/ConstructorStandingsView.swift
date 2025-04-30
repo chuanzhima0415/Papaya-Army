@@ -7,26 +7,10 @@
 
 import SwiftUI
 
-struct ConstructorStandingSwipeModifier: ViewModifier {
-	func body(content: Content) -> some View {
-		content
-			.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-				Button {
-					// do something
-				} label: {
-					Label("Good Job!", systemImage: "hand.thumbsup")
-				}
-			}
-	}
-}
-
-extension View {
-	func constructorStandingSwipeModifier() -> some View {
-		self.modifier(ConstructorStandingSwipeModifier())
-	}
-}
-
 struct ConstructorStandingsView: View {
+	@State private var likedId = UUID()
+	@State private var play = false
+	@State private var selectedStanding: ConstructorStanding? // 存要 show detail 的车队
 	@State var constructorStandings: [ConstructorStanding]?
 	var body: some View {
 		VStack {
@@ -35,35 +19,97 @@ struct ConstructorStandingsView: View {
 					List {
 						Section {
 							ForEach(0 ..< min(3, constructorStandings.count), id: \.self) { number in
-								NavigationLink {
-									ConstructorDetailInfoView(constructorId: constructorStandings[number].teamId)
-								} label: {
-									ConstructorStandingsRowItemView(constructorStanding: constructorStandings[number]).constructorStandingSwipeModifier()
+								HStack {
+									ConstructorStandingsRowItemView(constructorStanding: constructorStandings[number])
+										.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+											Button {
+												selectedStanding = constructorStandings[number]
+											} label: {
+												Label("details", systemImage: "arrowshape.up.circle.fill")
+											}
+										}
+									Button {
+										if !self.constructorStandings![number].isLiked {
+											self.constructorStandings![number].isLiked.toggle()
+											likedId = self.constructorStandings![number].id
+											play = true
+										} else {
+											withAnimation {
+												self.constructorStandings![number].isLiked.toggle()
+												likedId = UUID()
+											}
+										}
+									} label: {
+										Label("", systemImage: self.constructorStandings![number].isLiked ? "heart.fill" : "heart")
+											.foregroundStyle(Color(red: 225 / 255, green: 135 / 255, blue: 0))
+									}
+									.buttonStyle(.plain)
+									.overlay(alignment: .center) {
+										if self.constructorStandings![number].id == likedId {
+											LottieView(name: .heartLikes, animationSpeed: 4, contentMode: .scaleAspectFill, play: $play)
+												.frame(width: 80, height: 80)
+												.allowsHitTesting(false)
+										}
+									}
 								}
 							}
 						}
+
 						Section {
 							ForEach(3 ..< constructorStandings.count, id: \.self) { number in
-								NavigationLink {
-									ConstructorDetailInfoView(constructorId: constructorStandings[number].teamId)
-								} label: {
-									HStack {
-										ConstructorStandingsRowItemView(constructorStanding: constructorStandings[number])
+								HStack {
+									ConstructorStandingsRowItemView(constructorStanding: constructorStandings[number])
+										.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+											Button {
+												selectedStanding = constructorStandings[number]
+											} label: {
+												Label("details", systemImage: "arrowshape.up.circle.fill")
+											}
+										}
+									Button {
+										if !self.constructorStandings![number].isLiked {
+											self.constructorStandings![number].isLiked.toggle()
+											likedId = self.constructorStandings![number].id
+											play = true
+										} else {
+											withAnimation {
+												self.constructorStandings![number].isLiked.toggle()
+												likedId = UUID()
+											}
+										}
+									} label: {
+										Label("", systemImage: self.constructorStandings![number].isLiked ? "heart.fill" : "heart")
+											.foregroundStyle(Color(red: 225 / 255, green: 135 / 255, blue: 0))
+									}
+									.buttonStyle(.plain)
+									.overlay(alignment: .center) {
+										if self.constructorStandings![number].id == likedId {
+											LottieView(name: .heartLikes, animationSpeed: 4, contentMode: .scaleAspectFill, play: $play)
+												.frame(width: 80, height: 80)
+												.allowsHitTesting(false)
+										}
 									}
 								}
-								.constructorStandingSwipeModifier()
 							}
 						}
 					}
-					.listStyle(.insetGrouped)
+					.sheet(item: $selectedStanding) { standing in
+						NavigationStack {
+							ConstructorDetailInfoView(constructorId: standing.teamId)
+								.presentationDetents([.medium, .large])
+								.navigationTitle("\(standing.teamName)")
+						}
+					}
 				}
+				.listStyle(.automatic)
+
 			} else {
-				ProgressView("Loading constructor standings")
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {
 			Task {
-				self.constructorStandings = await ConstructorStandingsManager.shared.retrieveConstructorStandings()
+				constructorStandings = await ConstructorStandingsManager.shared.retrieveConstructorStandings()
 			}
 		}
 	}

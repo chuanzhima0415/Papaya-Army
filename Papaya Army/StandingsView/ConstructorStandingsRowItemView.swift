@@ -1,13 +1,14 @@
-//
-//  ConstructorStandingsRowItemView.swift
-//  Papaya Army
-//
-//  Created by 马传智 on 2025/4/27.
-//
+	//
+	//  ConstructorStandingsRowItemView.swift
+	//  Papaya Army
+	//
+	//  Created by 马传智 on 2025/4/27.
+	//
 
 import SwiftUI
 
 struct ConstructorStandingsRowItemView: View {
+	@State private var isLiked = false
 	var constructorStanding: ConstructorStanding
 	
 	var body: some View {

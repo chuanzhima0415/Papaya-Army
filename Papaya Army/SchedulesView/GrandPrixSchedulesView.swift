@@ -106,7 +106,7 @@ struct GrandPrixSchedulesView: View {
 						}
 					}
 				} else {
-					ProgressView("Loading")
+					LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 				}
 			}
 			.sheet(isPresented: $showingSheet, onDismiss: { // 关闭时的操作
@@ -119,7 +119,7 @@ struct GrandPrixSchedulesView: View {
 						StagesScheduleView(grandPrixSchedule: grandPrix)
 							.presentationDetents([.medium, .large])
 					} else {
-						ProgressView("Loading...")
+						LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 					}
 				}
 			})
@@ -143,8 +143,6 @@ struct GrandPrixSchedulesView: View {
 			} label: {
 				VStack {
 					Image(systemName: "arrow.clockwise.circle.fill")
-					Text("reshuffle")
-						.font(.headline)
 				}
 			}
 			.font(.system(size: 70))

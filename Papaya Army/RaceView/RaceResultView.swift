@@ -54,7 +54,7 @@ struct RaceResultView: View {
 				}
 				.navigationTitle("Race")
 			} else {
-				ProgressView("Loading race results ...")
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {

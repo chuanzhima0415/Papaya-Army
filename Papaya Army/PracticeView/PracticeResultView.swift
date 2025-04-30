@@ -43,7 +43,7 @@ struct PracticeNResultView: View {
 				}
 				.navigationTitle("Practice\(n)")
 			} else {
-				ProgressView("Loading Practice\(n) results")
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {

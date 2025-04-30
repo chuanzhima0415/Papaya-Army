@@ -27,7 +27,8 @@ struct DriversStandingsReponse: Codable {
 	}
 }
 
-struct DriversStanding: Codable, Equatable {
+struct DriversStanding: Codable, Equatable, Identifiable {
+	var id = UUID()
 	var driverId: String
 	var teamId: String
 	var points: Int
@@ -47,7 +48,7 @@ struct DriverDetailInfo: Codable, Equatable {
 	var nationality: String
 	var shortName: String
 	var birthday: String
-	var number: Int
+	var number: Int?
 	var url: String
 	
 	enum CodingKeys: String, CodingKey {

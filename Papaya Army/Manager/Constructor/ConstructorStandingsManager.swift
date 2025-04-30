@@ -40,7 +40,9 @@ struct ConstructorStandingsResopnse: Codable {
 	}
 }
 
-struct ConstructorStanding: Codable {
+struct ConstructorStanding: Codable, Identifiable {
+	var id = UUID()
+	var isLiked = false
 	var teamId: String
 	var teamName: String {
 		let parts = teamId.split(separator: "_")
@@ -53,4 +55,8 @@ struct ConstructorStanding: Codable {
 	var points: Int
 	var position: Int
 	var wins: Int?
+	
+	enum CodingKeys: String, CodingKey {
+		case teamId, points, position, wins
+	}
 }

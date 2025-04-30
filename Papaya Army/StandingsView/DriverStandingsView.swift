@@ -5,83 +5,64 @@
 //  Created by 马传智 on 2025/4/27.
 //
 
+import Lottie
 import SwiftUI
-
-struct DriverStandingSwipeModifier: ViewModifier {
-	func body(content: Content) -> some View {
-		content
-			.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-				Button {
-						// do something
-				} label: {
-					Label("Good Job!", systemImage: "hand.thumbsup")
-				}
-			}
-	}
-}
-
-extension View {
-	func driverStandingSwipeModifier() -> some View {
-		self.modifier(DriverStandingSwipeModifier())
-	}
-}
 
 struct DriverStandingsView: View {
 	private var fileURL: StorageManager.FileManagers<[DriversStanding]> {
 		StorageManager.FileManagers(filename: "Driver standings.json")
 	}
-
+	
 	var seasonId: String
+	@State private var selectedStanding: DriversStanding?
 	@State private var driverStandings: [DriversStanding]?
 	var body: some View {
-		NavigationStack {
+		VStack {
 			if let driverStandings {
 				List {
 					Section {
-						ForEach(0 ..< min(3, driverStandings.count), id: \.self) { index in
+						ForEach(0 ..< min(3, driverStandings.count), id: \.self) { number in
 							HStack {
-								NavigationLink {
-									DriverDetailInfoView(driverDetail: driverStandings[index].driverDetailInfo)
-								} label: {
-									HStack {
-										DriverStandingRowItemView(driverStanding: driverStandings[index])
+								DriverStandingRowItemView(driverStanding: driverStandings[number])
+									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+										Button {
+											selectedStanding = driverStandings[number]
+										} label: {
+											Label("show details", systemImage: "arrowshape.up.circle.fill")
+										}
 									}
-								}
-								.driverStandingSwipeModifier()
 							}
 						}
 					}
+					
 					Section {
-						ForEach(3 ..< max(3, driverStandings.count), id: \.self) { index in
-							HStack {
-								NavigationLink {
-									DriverDetailInfoView(driverDetail: driverStandings[index].driverDetailInfo)
-								} label: {
-									HStack {
-										DriverStandingRowItemView(driverStanding: driverStandings[index])
+						ForEach(3 ..< driverStandings.count, id: \.self) { number in
+							DriverStandingRowItemView(driverStanding: driverStandings[number])
+								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+									Button {
+										selectedStanding = driverStandings[number]
+									} label: {
+										Label("show details", systemImage: "arrowshape.up.circle.fill")
 									}
 								}
-								.driverStandingSwipeModifier()
-							}
 						}
 					}
 				}
-				.listStyle(.insetGrouped)
+				.sheet(item: $selectedStanding) { standing in
+					NavigationStack {
+						DriverDetailInfoView(driverDetail: standing.driverDetailInfo)
+							.presentationDetents([.medium, .large])
+							.navigationTitle("\(standing.driverDetailInfo.firstName) \(standing.driverDetailInfo.lastName)")
+					}
+				}
+				.listStyle(.sidebar)
 			} else {
-				ProgressView("Loading Standings...")
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {
 			Task {
-				// 优先加载本地的（尽量不要出现圈圈）
-				if let driverStandings = fileURL.loadDataFromFileManager() {
-					self.driverStandings = driverStandings
-				}
-				let driverStandings = await DriversStandingsManager.shared.retrieveDriverStandings()
-				if self.driverStandings != driverStandings {
-					self.driverStandings = driverStandings
-					fileURL.saveDataToFileManager(driverStandings)
-				}
+				driverStandings = await DriversStandingsManager.shared.retrieveDriverStandings()
 			}
 		}
 	}

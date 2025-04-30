@@ -42,7 +42,7 @@ struct QualifyingResultView: View {
 				}
 				.navigationTitle("Qualifying")
 			} else {
-				ProgressView("Loading Qualifying results")
+				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
 		.onAppear {
