@@ -28,29 +28,6 @@ struct ConstructorStandingsView: View {
 												Label("details", systemImage: "arrowshape.up.circle.fill")
 											}
 										}
-									Button {
-										if !self.constructorStandings![number].isLiked {
-											self.constructorStandings![number].isLiked.toggle()
-											likedId = self.constructorStandings![number].id
-											play = true
-										} else {
-											withAnimation {
-												self.constructorStandings![number].isLiked.toggle()
-												likedId = UUID()
-											}
-										}
-									} label: {
-										Label("", systemImage: self.constructorStandings![number].isLiked ? "heart.fill" : "heart")
-											.foregroundStyle(Color(red: 225 / 255, green: 135 / 255, blue: 0))
-									}
-									.buttonStyle(.plain)
-									.overlay(alignment: .center) {
-										if self.constructorStandings![number].id == likedId {
-											LottieView(name: .heartLikes, animationSpeed: 4, contentMode: .scaleAspectFill, play: $play)
-												.frame(width: 80, height: 80)
-												.allowsHitTesting(false)
-										}
-									}
 								}
 							}
 						}
@@ -66,29 +43,6 @@ struct ConstructorStandingsView: View {
 												Label("details", systemImage: "arrowshape.up.circle.fill")
 											}
 										}
-									Button {
-										if !self.constructorStandings![number].isLiked {
-											self.constructorStandings![number].isLiked.toggle()
-											likedId = self.constructorStandings![number].id
-											play = true
-										} else {
-											withAnimation {
-												self.constructorStandings![number].isLiked.toggle()
-												likedId = UUID()
-											}
-										}
-									} label: {
-										Label("", systemImage: self.constructorStandings![number].isLiked ? "heart.fill" : "heart")
-											.foregroundStyle(Color(red: 225 / 255, green: 135 / 255, blue: 0))
-									}
-									.buttonStyle(.plain)
-									.overlay(alignment: .center) {
-										if self.constructorStandings![number].id == likedId {
-											LottieView(name: .heartLikes, animationSpeed: 4, contentMode: .scaleAspectFill, play: $play)
-												.frame(width: 80, height: 80)
-												.allowsHitTesting(false)
-										}
-									}
 								}
 							}
 						}
