@@ -47,63 +47,52 @@ struct GrandPrixSchedulesView: View {
 					// 如果 id 不变 → 认为是同一个视图，属性变化会渐变动画
 					// 如果 id 变了 → 认为是新视图，删除旧视图，新建一个视图
 					ForEach(cards, id: \.id) { card in
-						ZStack { // 一张卡片的 view
-							Rectangle()
-								.fill(card.color)
-								.clipShape(.rect(cornerRadius: 20))
-							VStack {
-								Text("Round: \(card.roundIndex + 1)")
-								Text(
-									"\(grandPrixSchedules[card.roundIndex].gpName)"
-								)
-							}
-							.font(.headline)
-							.fontWeight(.bold)
-						}
-						.frame(width: 250, height: 250)
-						.scaleEffect(pressingCard?.id == card.id ? 1.12 : 1)
-						.offset(y: card.offset * 8)
-						.offset(draggingCard?.id == card.id ? dragAmount : .zero)
-						.gesture(
-							DragGesture()
-								.onChanged {
-									dragAmount = $0.translation
-									draggingCard = card
-								}
-								.onEnded { _ in
-									withAnimation {
-										dragAmount = .zero
-										draggingCard = nil
+						CardView(gpName: grandPrixSchedules[card.roundIndex].gpName)
+							.frame(width: 280, height: 250)
+							.scaleEffect(pressingCard?.id == card.id ? 1.12 : 1)
+							.shadow(radius: 10)
+							.offset(y: card.offset * 5)
+							.offset(draggingCard?.id == card.id ? dragAmount : .zero)
+							.gesture(
+								DragGesture()
+									.onChanged {
+										dragAmount = $0.translation
+										draggingCard = card
+									}
+									.onEnded { _ in
+										withAnimation {
+											dragAmount = .zero
+											draggingCard = nil
 
-										let cardsCount = cards.count
-										var topCard = cards.removeLast()
-										topCard.roundIndex = (topCard.roundIndex + cardsCount) % grandPrixSchedulesCount
-										cards.insert(topCard, at: cards.startIndex)
+											let cardsCount = cards.count
+											var topCard = cards.removeLast()
+											topCard.roundIndex = (topCard.roundIndex + cardsCount) % grandPrixSchedulesCount
+											cards.insert(topCard, at: cards.startIndex)
 
-										// 改变每张卡片的 offset
-										for index in cards.indices {
-											cards[index].offset = Double(index) + 1
+											// 改变每张卡片的 offset
+											for index in cards.indices {
+												cards[index].offset = Double(index) + 1
+											}
 										}
 									}
-								}
-						)
-						.onLongPressGesture(minimumDuration: 0.2) { // 长按松开后的处理
-							withAnimation {
-								pressingCard = card
-								showingSheet = true
-							}
-						} onPressingChanged: { isPressingNow in // 从不按到按走一次，从按到不按走一次，只要按压变了，都会走的
-							withAnimation(.spring(response: 0.5, dampingFraction: 2, blendDuration: 0)) {
-								if isPressingNow {
+							)
+							.onLongPressGesture(minimumDuration: 0.2) { // 长按松开后的处理
+								withAnimation {
 									pressingCard = card
-									DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-										triggerHapticFeedback()
+									showingSheet = true
+								}
+							} onPressingChanged: { isPressingNow in // 从不按到按走一次，从按到不按走一次，只要按压变了，都会走的
+								withAnimation(.spring(response: 0.5, dampingFraction: 2, blendDuration: 0)) {
+									if isPressingNow {
+										pressingCard = card
+										DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+											triggerHapticFeedback()
+										}
+									} else {
+										pressingCard = nil
 									}
-								} else {
-									pressingCard = nil
 								}
 							}
-						}
 					}
 				} else {
 					LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
@@ -129,8 +118,8 @@ struct GrandPrixSchedulesView: View {
 						self.grandPrixSchedules = grandPrixSchedules
 					}
 					grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedules()
-					if self.grandPrixSchedules != grandPrixSchedules {
-						self.grandPrixSchedules = grandPrixSchedules
+					if grandPrixSchedules != grandPrixSchedules {
+						grandPrixSchedules = grandPrixSchedules
 						fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
 					}
 				}
@@ -149,14 +138,14 @@ struct GrandPrixSchedulesView: View {
 			.padding()
 		}
 	}
-	
+
 	/// 制造手机震动
 	func triggerHapticFeedback() {
 		let generator = UIImpactFeedbackGenerator(style: .heavy)
 		generator.prepare()
 		generator.impactOccurred()
 	}
-	
+
 	/// 重置卡片
 	func reshuffleCard() {
 		withAnimation {
