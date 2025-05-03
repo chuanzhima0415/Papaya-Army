@@ -40,7 +40,7 @@ struct StagesScheduleView: View {
 								case "sprintRace":
 									SprintRaceResultView(year: "2025", round: grandPrixSchedule.round)
 								default:
-									ContentView()
+									EmptyView()
 								}
 							} label: {
 								Text("\(stageName)")

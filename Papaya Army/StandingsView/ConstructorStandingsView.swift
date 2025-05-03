@@ -8,59 +8,37 @@
 import SwiftUI
 
 struct ConstructorStandingsView: View {
-	@State private var likedId = UUID()
-	@State private var play = false
 	@State private var selectedStanding: ConstructorStanding? // 存要 show detail 的车队
 	@State var constructorStandings: [ConstructorStanding]?
 	var body: some View {
 		VStack {
 			if let constructorStandings {
 				NavigationStack {
-					List {
-						Section {
-							ForEach(0 ..< min(3, constructorStandings.count), id: \.self) { number in
-								HStack {
-									ConstructorStandingsRowItemView(constructorStanding: constructorStandings[number])
-										.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-											Button {
-												selectedStanding = constructorStandings[number]
-											} label: {
-												Label("details", systemImage: "arrowshape.up.circle.fill")
-											}
-										}
+					List(constructorStandings) { standing in
+						ConstructorStandingCardView(position: standing.position, points: standing.points, teamName: standing.teamName)
+							.listRowSeparator(.hidden)
+							.swipeActions(edge: .trailing, allowsFullSwipe: false) {
+								Button {
+									selectedStanding = standing
+								} label: {
+									Label("For details", systemImage: "info.bubble.fill")
 								}
 							}
-						}
-
-						Section {
-							ForEach(3 ..< constructorStandings.count, id: \.self) { number in
-								HStack {
-									ConstructorStandingsRowItemView(constructorStanding: constructorStandings[number])
-										.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-											Button {
-												selectedStanding = constructorStandings[number]
-											} label: {
-												Label("details", systemImage: "arrowshape.up.circle.fill")
-											}
-										}
-								}
-							}
-						}
 					}
+					.listStyle(.plain)
 					.sheet(item: $selectedStanding) { standing in
 						NavigationStack {
 							ConstructorDetailInfoView(constructorId: standing.teamId)
 								.presentationDetents([.medium, .large])
-								.navigationTitle("\(standing.teamName)")
+								.navigationTitle(standing.teamName)
 						}
 					}
 				}
-				.listStyle(.automatic)
-
 			} else {
 				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
 		}
+		.padding()
 		.onAppear {
 			Task {
 				constructorStandings = await ConstructorStandingsManager.shared.retrieveConstructorStandings()

@@ -11,7 +11,7 @@ import Lottie
 enum LottieAnimations: String {
 	case loading = "LoadingAnimation"
 	case thumbup = "ThumbupAnimation"
-	case heartLikes = "HeartLikes"
+	case heartLikes = "LikeAnimation"
 }
 
 struct LottieView: UIViewRepresentable {

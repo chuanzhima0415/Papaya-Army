@@ -12,7 +12,7 @@ struct Papaya_ArmyApp: App {
     var body: some Scene {
         WindowGroup {
 			TabsView(seasonId: "2025")
-//			ContentView()
+//			ConstructorStandingCardView(teamName: "Mclaren")
         }
     }
 }
