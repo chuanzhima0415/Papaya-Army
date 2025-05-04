@@ -54,12 +54,20 @@ struct StagesScheduleView: View {
 								EmptyView()
 							}
 						} label: {
-							Text("\(stageNameFormatter(stage: stageName))")
-								.font(.sheetStageFont)
+							VStack(alignment: .leading) {
+								Text("\(stageNameFormatter(stage: stageName))")
+									.font(.sheetStageFont)
+								Text(dateFormatter(utcdate: startDate))
+									.font(.sheetStartTimeOfStageFont)
+							}
 						}
 					} else {
-						Text("\(stageNameFormatter(stage: stageName))")
-							.font(.sheetStageFont)
+						VStack(alignment: .leading) {
+							Text("\(stageNameFormatter(stage: stageName))")
+								.font(.sheetStageFont)
+							Text(dateFormatter(utcdate: startDate))
+								.font(.sheetStartTimeOfStageFont)
+						}
 					}
 				}
 			}
@@ -70,6 +78,14 @@ struct StagesScheduleView: View {
 	func stageNameFormatter(stage: String) -> String {
 		guard let index = stage.firstIndex(where: { $0.isUppercase }) else { return stage.capitalized }
 		return (stage[stage.startIndex ..< index] + " " + stage[index ..< stage.endIndex]).capitalized
+	}
+	
+	func dateFormatter(utcdate: Date) -> String {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "MM-dd HH:mm"
+		formatter.timeZone = .current
+		
+		return formatter.string(from: utcdate)
 	}
 }
 

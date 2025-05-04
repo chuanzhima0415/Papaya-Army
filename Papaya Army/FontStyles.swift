@@ -32,4 +32,8 @@ extension Font {
 	static var sheetCircuitLengthUnitFont: Font {
 		Font.custom("Seymour One", size: 11)
 	}
+	
+	static var sheetStartTimeOfStageFont: Font {
+		Font.custom("Racing Sans One", size: 11)
+	}
 }
