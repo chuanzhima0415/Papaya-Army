@@ -19,10 +19,6 @@ struct TabsView: View {
 				.tabItem {
 					Label("Standings", systemImage: "trophy.fill")
 				}
-			Text("Hello")
-				.tabItem {
-					Label("Settings", systemImage: "gear")
-				}
 		}
 		.accentColor(color)
 	}

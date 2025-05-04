@@ -54,11 +54,19 @@ struct StagesScheduleView: View {
 								EmptyView()
 							}
 						} label: {
-							VStack(alignment: .leading) {
-								Text("\(stageNameFormatter(stage: stageName))")
-									.font(.sheetStageFont)
-								Text(dateFormatter(utcdate: startDate))
-									.font(.sheetStartTimeOfStageFont)
+							HStack {
+								VStack(alignment: .leading) {
+									Text("\(stageNameFormatter(stage: stageName))")
+										.font(.sheetStageFont)
+									Text(dateFormatter(utcdate: startDate))
+										.font(.sheetStartTimeOfStageFont)
+								}
+								
+								Spacer()
+								
+								Text("Results")
+									.font(.sheetNavLinkFont)
+									.foregroundStyle(.secondary)
 							}
 						}
 					} else {

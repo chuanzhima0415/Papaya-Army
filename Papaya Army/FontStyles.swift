@@ -36,4 +36,8 @@ extension Font {
 	static var sheetStartTimeOfStageFont: Font {
 		Font.custom("Racing Sans One", size: 11)
 	}
+	
+	static var sheetNavLinkFont: Font {
+		Font.custom("Shrikhand", size: 17)
+	}
 }
