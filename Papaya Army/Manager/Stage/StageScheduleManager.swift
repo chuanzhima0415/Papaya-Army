@@ -7,15 +7,7 @@
 
 import Foundation
 
-struct StartDate: Codable, Equatable, Comparable {
-	static func < (lhs: StartDate, rhs: StartDate) -> Bool {
-		if let date1 = lhs.fullDate, let date2 = rhs.fullDate {
-			return date1 < date2
-		} else {
-			return false
-		}
-	}
-
+struct StartDate: Codable, Equatable {
 	var date: String?
 	var time: String?
 	var fullDate: Date? {

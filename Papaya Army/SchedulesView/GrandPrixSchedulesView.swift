@@ -11,7 +11,6 @@ import UIKit
 struct Card: Identifiable {
 	var offset: Double
 	let id: Int
-	let color: Color
 	var roundIndex: Int
 }
 
@@ -19,10 +18,10 @@ struct GrandPrixSchedulesView: View {
 	@State private var grandPrixSchedules: [GrandPrixSchedule]? // 每一站的比赛信息
 	@State private var dragAmount = CGSize.zero // 拖动的坐标
 	@State private var cards: [Card] = [
-		Card(offset: 0, id: 0, color: .orange, roundIndex: 3),
-		Card(offset: 1, id: 1, color: .red, roundIndex: 2),
-		Card(offset: 2, id: 2, color: .yellow, roundIndex: 1),
-		Card(offset: 3, id: 3, color: .green, roundIndex: 0),
+		Card(offset: 0, id: 0, roundIndex: 3),
+		Card(offset: 1, id: 1, roundIndex: 2),
+		Card(offset: 2, id: 2, roundIndex: 1),
+		Card(offset: 3, id: 3, roundIndex: 0),
 	]
 	@State private var draggingCard: Card? // 拖动的卡片
 	@State private var pressingCard: Card? // 长按的卡片
@@ -150,10 +149,10 @@ struct GrandPrixSchedulesView: View {
 	func reshuffleCard() {
 		withAnimation {
 			cards = [
-				Card(offset: 0, id: 0, color: .orange, roundIndex: 3),
-				Card(offset: 1, id: 1, color: .red, roundIndex: 2),
-				Card(offset: 2, id: 2, color: .yellow, roundIndex: 1),
-				Card(offset: 3, id: 3, color: .green, roundIndex: 0),
+				Card(offset: 0, id: 0, roundIndex: 3),
+				Card(offset: 1, id: 1, roundIndex: 2),
+				Card(offset: 2, id: 2, roundIndex: 1),
+				Card(offset: 3, id: 3, roundIndex: 0),
 			]
 		}
 	}
@@ -161,4 +160,5 @@ struct GrandPrixSchedulesView: View {
 
 #Preview {
 	GrandPrixSchedulesView(seasonid: "2025")
+//	TabsView(seasonId: "2025")
 }

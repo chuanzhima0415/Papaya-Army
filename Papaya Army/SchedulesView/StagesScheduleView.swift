@@ -10,8 +10,8 @@ import SwiftUI
 /// 列举某一站的所有 stages
 struct StagesScheduleView: View {
 	var grandPrixSchedule: GrandPrixSchedule
-	private var schedules: [(String, StartDate)] {
-		var ret = [(stageName: String, startDate: StartDate)]()
+	private var schedules: [(String, Date)] {
+		var ret = [(stageName: String, startDate: Date)]()
 		/*
 		 child.label               child.value
 		     race:                   StartDate
@@ -24,7 +24,7 @@ struct StagesScheduleView: View {
 		  */
 		let mirror = Mirror(reflecting: grandPrixSchedule.stageSchedule)
 		for child in mirror.children {
-			if let stage = child.label, let startDate = child.value as? StartDate {
+			if let stage = child.label, let startDate = (child.value as? StartDate)?.fullDate {
 				ret.append((stage, startDate))
 			}
 		}
@@ -34,41 +34,39 @@ struct StagesScheduleView: View {
 	var body: some View {
 		NavigationStack {
 			List(schedules, id: \.0) { stageName, startDate in
-				if let date = startDate.fullDate {
-					HStack {
-						if Date() >= date {
-							NavigationLink {
-								switch stageName {
-								case "race":
-									RaceResultView(year: "2025", round: grandPrixSchedule.round)
-								case "qualifying":
-									QualifyingResultView(year: "2025", round: grandPrixSchedule.round)
-								case "practice1",
-								     "practice2",
-								     "practice3":
-									PracticeNResultView(year: "2025", round: grandPrixSchedule.round, n: Int(String(stageName.last!))!)
-								case "sprintQualifying":
-									SprintQualifyingResultView(year: "2025", round: grandPrixSchedule.round)
-								case "sprintRace":
-									SprintRaceResultView(year: "2025", round: grandPrixSchedule.round)
-								default:
-									EmptyView()
-								}
-							} label: {
-								Text("\(stageNameFormatter(stage: stageName))")
-									.font(.headline.weight(.semibold))
+				HStack {
+					if Date() >= startDate {
+						NavigationLink {
+							switch stageName {
+							case "race":
+								RaceResultView(year: "2025", round: grandPrixSchedule.round)
+							case "qualifying":
+								QualifyingResultView(year: "2025", round: grandPrixSchedule.round)
+							case "practice1",
+							     "practice2",
+							     "practice3":
+								PracticeNResultView(year: "2025", round: grandPrixSchedule.round, n: Int(String(stageName.last!))!)
+							case "sprintQualifying":
+								SprintQualifyingResultView(year: "2025", round: grandPrixSchedule.round)
+							case "sprintRace":
+								SprintRaceResultView(year: "2025", round: grandPrixSchedule.round)
+							default:
+								EmptyView()
 							}
-						} else {
+						} label: {
 							Text("\(stageNameFormatter(stage: stageName))")
-								.font(.headline.weight(.semibold))
+								.font(.sheetStageFont)
 						}
+					} else {
+						Text("\(stageNameFormatter(stage: stageName))")
+							.font(.sheetStageFont)
 					}
 				}
 			}
 			.navigationTitle(grandPrixSchedule.gpName)
 		}
 	}
-	
+
 	func stageNameFormatter(stage: String) -> String {
 		guard let index = stage.firstIndex(where: { $0.isUppercase }) else { return stage.capitalized }
 		return (stage[stage.startIndex ..< index] + " " + stage[index ..< stage.endIndex]).capitalized

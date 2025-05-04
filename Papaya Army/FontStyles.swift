@@ -12,4 +12,24 @@ extension Font {
 	static var constructorStandingPosFont: Font {
 		Font.custom("Hiragino Kaku Gothic Std W8", size: 28)
 	}
+
+	static var sheetNavTitleFont: Font {
+		Font.custom("Seymour One", size: 22)
+	}
+
+	static var sheetStageFont: Font {
+		Font.custom("Sansita One", size: 17)
+	}
+
+	static var sheetCircuitNameFont: Font {
+		Font.custom("Seymour One", size: 15)
+	}
+
+	static var sheetCircuitInfoFont: Font {
+		Font.custom("Seymour One", size: 15)
+	}
+
+	static var sheetCircuitLengthUnitFont: Font {
+		Font.custom("Seymour One", size: 11)
+	}
 }
