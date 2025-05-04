@@ -78,8 +78,10 @@ struct ConstructorStandingCardView: View {
 					
 					Button {
 						if !isLiked {
-							isLiked.toggle()
-							play = true
+							withAnimation {
+								isLiked.toggle()
+								play = true
+							}
 						} else {
 							withAnimation {
 								isLiked.toggle()

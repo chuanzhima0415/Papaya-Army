@@ -11,14 +11,24 @@ import SwiftUI
 struct StagesScheduleView: View {
 	var grandPrixSchedule: GrandPrixSchedule
 	private var schedules: [(String, StartDate)] {
-		var ret = [(String, StartDate)]()
+		var ret = [(stageName: String, startDate: StartDate)]()
+		/*
+		 child.label               child.value
+		     race:                   StartDate
+		     qualifying:             StartDate
+		     practice1:              StartDate
+		     practice2:              StartDate
+		     practice3:              StartDate
+		     sprintQualifying:       StartDate
+		     sprintRace:             StartDate
+		  */
 		let mirror = Mirror(reflecting: grandPrixSchedule.stageSchedule)
 		for child in mirror.children {
 			if let stage = child.label, let startDate = child.value as? StartDate {
 				ret.append((stage, startDate))
 			}
 		}
-		return ret
+		return ret.sorted(by: { $0.startDate < $1.startDate })
 	}
 
 	var body: some View {
@@ -33,7 +43,9 @@ struct StagesScheduleView: View {
 									RaceResultView(year: "2025", round: grandPrixSchedule.round)
 								case "qualifying":
 									QualifyingResultView(year: "2025", round: grandPrixSchedule.round)
-								case "practice1", "practice2", "practice3":
+								case "practice1",
+								     "practice2",
+								     "practice3":
 									PracticeNResultView(year: "2025", round: grandPrixSchedule.round, n: Int(String(stageName.last!))!)
 								case "sprintQualifying":
 									SprintQualifyingResultView(year: "2025", round: grandPrixSchedule.round)
@@ -43,11 +55,11 @@ struct StagesScheduleView: View {
 									EmptyView()
 								}
 							} label: {
-								Text("\(stageName)")
+								Text("\(stageNameFormatter(stage: stageName))")
 									.font(.headline.weight(.semibold))
 							}
 						} else {
-							Text("\(stageName)")
+							Text("\(stageNameFormatter(stage: stageName))")
 								.font(.headline.weight(.semibold))
 						}
 					}
@@ -55,6 +67,11 @@ struct StagesScheduleView: View {
 			}
 			.navigationTitle(grandPrixSchedule.gpName)
 		}
+	}
+	
+	func stageNameFormatter(stage: String) -> String {
+		guard let index = stage.firstIndex(where: { $0.isUppercase }) else { return stage.capitalized }
+		return (stage[stage.startIndex ..< index] + " " + stage[index ..< stage.endIndex]).capitalized
 	}
 }
 

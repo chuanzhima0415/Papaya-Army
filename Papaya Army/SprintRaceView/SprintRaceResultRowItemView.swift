@@ -34,9 +34,14 @@ struct SprintRaceResultRowItemView: View {
 					Text("\(sprintRaceResult.driver.firstName + " " + sprintRaceResult.driver.lastName)")
 				}
 				Spacer()
-				VStack {
-					Text("\(sprintRaceResult.points)")
-					Text("pts")
+				
+				if (Int(sprintRaceResult.position) != nil) {
+					VStack {
+						Text("\(sprintRaceResult.points)")
+						Text("pts")
+					}
+				} else {
+					Text("DNF")
 				}
 			}
 			.font(.headline.weight(.medium))

@@ -34,9 +34,14 @@ struct RaceResultRowItemView: View {
 					Text("\(raceResult.driver.firstName + " " + raceResult.driver.lastName)")
 				}
 				Spacer()
-				VStack {
-					Text("\(raceResult.points)")
-					Text("pts")
+				
+				if (Int(raceResult.position) != nil) {
+					VStack {
+						Text("\(raceResult.points)")
+						Text("pts")
+					}
+				} else {
+					Text("DNF")
 				}
 			}
 			.font(.headline.weight(.medium))
