@@ -104,7 +104,7 @@ struct GrandPrixSchedulesView: View {
 			}, content: { // 弹出时的操作
 				NavigationStack {
 					if let pressingCard, let grandPrix = grandPrixSchedules?[pressingCard.roundIndex] {
-						StagesScheduleView(grandPrixSchedule: grandPrix)
+						StagesScheduleView(gpSchedule: grandPrix)
 							.presentationDetents([.medium, .large])
 					} else {
 						LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
@@ -117,8 +117,8 @@ struct GrandPrixSchedulesView: View {
 						self.grandPrixSchedules = grandPrixSchedules
 					}
 					grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedules()
-					if grandPrixSchedules != grandPrixSchedules {
-						grandPrixSchedules = grandPrixSchedules
+					if grandPrixSchedules != self.grandPrixSchedules {
+						self.grandPrixSchedules = grandPrixSchedules
 						fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
 					}
 				}

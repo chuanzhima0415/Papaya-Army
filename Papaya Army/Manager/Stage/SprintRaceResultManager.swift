@@ -15,12 +15,13 @@ struct SprintRaceResultManager {
 			assertionFailure("fail to fetch sprint race results")
 			return nil
 		}
-		return response.race.results
+		return response.race?.results
 	}
 }
 
 struct SprintRaceResponse: Codable {
-	var race: SprintRace
+	var race: SprintRace?
+	var status: Int?
 
 	enum CodingKeys: String, CodingKey {
 		case race = "races"

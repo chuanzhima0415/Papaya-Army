@@ -16,15 +16,16 @@ struct RaceResultManager {
 			return nil
 		}
 		
-		return response.race.results
+		return response.race?.results
 	}
 }
 
 struct RaceResultResponse: Codable {
-	var race: Race
+	var race: Race?
+	var status: Int?
 	
 	enum CodingKeys: String, CodingKey {
-		case race = "races"
+		case race = "races", status
 	}
 }
 

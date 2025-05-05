@@ -18,14 +18,14 @@ struct PracticeResultManager {
 		
 		switch n {
 		case 1:
-			response.race.practice1Results?.removeAll(where: { $0.time == nil })
-			return response.race.practice1Results
+			response.race?.practice1Results?.removeAll(where: { $0.time == nil })
+			return response.race?.practice1Results
 		case 2:
-			response.race.practice2Results?.removeAll(where: { $0.time == nil })
-			return response.race.practice2Results
+			response.race?.practice2Results?.removeAll(where: { $0.time == nil })
+			return response.race?.practice2Results
 		case 3:
-			response.race.practice3Results?.removeAll(where: { $0.time == nil })
-			return response.race.practice3Results
+			response.race?.practice3Results?.removeAll(where: { $0.time == nil })
+			return response.race?.practice3Results
 		default:
 			return nil
 		}
@@ -33,7 +33,8 @@ struct PracticeResultManager {
 }
 
 struct PracticeResultResponse: Codable {
-	var race: Practice
+	var race: Practice?
+	var status: Int?
 	
 	enum CodingKeys: String, CodingKey {
 		case race = "races"

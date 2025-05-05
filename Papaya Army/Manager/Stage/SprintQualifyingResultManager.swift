@@ -15,12 +15,13 @@ struct SprintQualifyingResultManager {
 			return nil
 		}
 		
-		return response.race.results
+		return response.race?.results
 	}
 }
 
 struct SprintQualifyingResultResponse: Codable {
-	var race: SprintQualifying
+	var race: SprintQualifying?
+	var status: Int?
 	
 	enum CodingKeys: String, CodingKey {
 		case race = "races"
