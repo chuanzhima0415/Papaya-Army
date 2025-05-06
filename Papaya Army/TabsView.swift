@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct TabsView: View {
-	let color = Color(red: ConstructorColor.mclaren.red, green: ConstructorColor.mclaren.green, blue: ConstructorColor.mclaren.blue)
+//	let color = Color(red: ConstructorColor.mclaren.red, green: ConstructorColor.mclaren.green, blue: ConstructorColor.mclaren.blue)
+	let color: Color = .black
 	var seasonId: String
 	var body: some View {
 		TabView {
