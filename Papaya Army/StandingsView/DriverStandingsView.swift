@@ -12,7 +12,7 @@ struct DriverStandingsView: View {
 	private var fileURL: StorageManager.FileManagers<[DriversStanding]> {
 		StorageManager.FileManagers(filename: "Driver standings.json")
 	}
-	
+
 	var seasonId: String
 	@State private var selectedStanding: DriversStanding?
 	@State private var driverStandings: [DriversStanding]?
@@ -20,24 +20,8 @@ struct DriverStandingsView: View {
 		VStack {
 			if let driverStandings {
 				List {
-					Section {
-						ForEach(0 ..< min(3, driverStandings.count), id: \.self) { number in
-							HStack {
-								DriverStandingRowItemView(driverStanding: driverStandings[number])
-									.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-										Button {
-											selectedStanding = driverStandings[number]
-										} label: {
-											Label("show details", systemImage: "arrowshape.up.circle.fill")
-										}
-									}
-							}
-						}
-					}
-					.listRowBackground(Color.clear)
-					
-					Section {
-						ForEach(3 ..< driverStandings.count, id: \.self) { number in
+					ForEach(0 ..< driverStandings.count, id: \.self) { number in
+						HStack {
 							DriverStandingRowItemView(driverStanding: driverStandings[number])
 								.swipeActions(edge: .trailing, allowsFullSwipe: false) {
 									Button {
@@ -45,9 +29,11 @@ struct DriverStandingsView: View {
 									} label: {
 										Label("show details", systemImage: "arrowshape.up.circle.fill")
 									}
+									.tint(.clear)
 								}
 						}
 					}
+					.listRowSeparator(.hidden)
 					.listRowBackground(Color.clear)
 				}
 				.sheet(item: $selectedStanding) { standing in
@@ -72,5 +58,6 @@ struct DriverStandingsView: View {
 }
 
 #Preview {
-	DriverStandingsView(seasonId: "2025")
+//	DriverStandingsView(seasonId: "2025")
+	StandingsView(seasonId: "2025")
 }

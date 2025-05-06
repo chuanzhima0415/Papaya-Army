@@ -26,6 +26,7 @@ struct StandingsView: View {
 			VStack {
 				VStack {
 					Text("Standings")
+						.foregroundStyle(.primary)
 						.font(.title.weight(.bold))
 						.ignoresSafeArea()
 					

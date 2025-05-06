@@ -5,8 +5,8 @@
 //  Created by 马传智 on 2025/3/14.
 //
 
-import SwiftUI
 import Lottie
+import SwiftUI
 
 struct ConstructorStandingCardView: View {
 	@State private var play = false
@@ -17,27 +17,28 @@ struct ConstructorStandingCardView: View {
 	var teamColor: (red: Double, green: Double, blue: Double) {
 		switch teamName {
 		case "Mclaren":
-			return ConstructorColor.mclaren
+			ConstructorColor.mclaren
 		case "Mercedes":
-			return ConstructorColor.mercedes
+			ConstructorColor.mercedes
 		case "Haas":
-			return ConstructorColor.haas
+			ConstructorColor.haas
 		case "Red Bull":
-			return ConstructorColor.red_bull
+			ConstructorColor.red_bull
 		case "Rb":
-			return ConstructorColor.visa_rb
+			ConstructorColor.visa_rb
 		case "Aston Martin":
-			return ConstructorColor.aston_martin
+			ConstructorColor.aston_martin
 		case "Ferrari":
-			return ConstructorColor.ferrari
+			ConstructorColor.ferrari
 		case "Alpine":
-			return ConstructorColor.alpine
+			ConstructorColor.alpine
 		case "Sauber":
-			return ConstructorColor.sauber
+			ConstructorColor.sauber
 		default:
-			return ConstructorColor.williams
+			ConstructorColor.williams
 		}
 	}
+
 	var body: some View {
 		ZStack {
 			RoundedRectangle(cornerRadius: 50)
@@ -100,7 +101,6 @@ struct ConstructorStandingCardView: View {
 								.frame(width: 100, height: 100)
 						}
 					}
-
 				}
 				.padding(.horizontal, 10)
 			}
@@ -111,5 +111,4 @@ struct ConstructorStandingCardView: View {
 
 #Preview {
 	ConstructorStandingCardView(position: 1, points: 188, teamName: "Mclaren")
-//	ConstructorStandingsView()
 }
