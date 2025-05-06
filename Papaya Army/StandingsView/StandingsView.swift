@@ -20,30 +20,32 @@ struct StandingsView: View {
 	var seasonId: String
 	@State private var selectedStandings: Standings = .drivers
 	var body: some View {
-		NavigationStack {
-			NavigationStack {
-				Text("Standings")
-					.font(.title.weight(.bold))
-					.ignoresSafeArea()
-				
-				Picker("Choose you standings", selection: $selectedStandings.animation()) {
-					ForEach(Standings.allCases) {
-						Text($0.rawValue.capitalized).tag($0)
+		ZStack {
+			AnimatedBackgroundView()
+			
+			VStack {
+				VStack {
+					Text("Standings")
+						.font(.title.weight(.bold))
+						.ignoresSafeArea()
+					
+					Picker("Choose you standings", selection: self.$selectedStandings.animation()) {
+						ForEach(Standings.allCases) {
+							Text($0.rawValue.capitalized).tag($0)
+						}
 					}
+					.pickerStyle(.segmented)
+					.padding()
+					.frame(width: 300)
 				}
-				.pickerStyle(.segmented)
-				.padding()
-				.frame(width: 300)
-			}
-			.padding(.top, 20)
-			
-			Spacer()
-			
-			switch selectedStandings {
-			case .drivers:
-				DriverStandingsView(seasonId: seasonId)
-			case .constructors:
-				ConstructorStandingsView()
+				.padding(.top, 20)
+				
+				switch self.selectedStandings {
+				case .drivers:
+					DriverStandingsView(seasonId: self.seasonId)
+				case .constructors:
+					ConstructorStandingsView()
+				}
 			}
 		}
 	}

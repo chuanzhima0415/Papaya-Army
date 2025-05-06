@@ -34,6 +34,7 @@ struct DriverStandingsView: View {
 							}
 						}
 					}
+					.listRowBackground(Color.clear)
 					
 					Section {
 						ForEach(3 ..< driverStandings.count, id: \.self) { number in
@@ -47,6 +48,7 @@ struct DriverStandingsView: View {
 								}
 						}
 					}
+					.listRowBackground(Color.clear)
 				}
 				.sheet(item: $selectedStanding) { standing in
 					NavigationStack {
@@ -55,7 +57,8 @@ struct DriverStandingsView: View {
 							.navigationTitle("\(standing.driverDetailInfo.firstName) \(standing.driverDetailInfo.lastName)")
 					}
 				}
-				.listStyle(.sidebar)
+				.listStyle(.plain)
+				.scrollContentBackground(.hidden)
 			} else {
 				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
