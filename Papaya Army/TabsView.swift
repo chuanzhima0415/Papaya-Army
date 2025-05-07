@@ -8,21 +8,22 @@
 import SwiftUI
 
 struct TabsView: View {
-//	let color = Color(red: ConstructorColor.mclaren.red, green: ConstructorColor.mclaren.green, blue: ConstructorColor.mclaren.blue)
-	let color: Color = .black
+	@State private var activeTab: TabModel = .schedule
+	@State private var cards: [Card] = [
+		Card(offset: 0, id: 0, roundIndex: 3),
+		Card(offset: 1, id: 1, roundIndex: 2),
+		Card(offset: 2, id: 2, roundIndex: 1),
+		Card(offset: 3, id: 3, roundIndex: 0),
+	]
 	var seasonId: String
 	var body: some View {
-		TabView {
-			GrandPrixSchedulesView(seasonid: seasonId)
-				.tabItem {
-					Label("Schedule", systemImage: "calendar.badge.checkmark")
-				}
+		TabContainer(cards: $cards, selection: $activeTab) {
+			GrandPrixSchedulesView(cards: $cards, seasonid: seasonId)
+				.tabBarItem(tab: .schedule, selection: $activeTab)
+			
 			StandingsView(seasonId: seasonId)
-				.tabItem {
-					Label("Standings", systemImage: "trophy.fill")
-				}
+				.tabBarItem(tab: .standing, selection: $activeTab)
 		}
-		.accentColor(color)
 	}
 }
 
