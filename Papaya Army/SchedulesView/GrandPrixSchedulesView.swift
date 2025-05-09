@@ -45,7 +45,7 @@ struct GrandPrixSchedulesView: View {
 						CardView(gpName: grandPrixSchedules[card.roundIndex].gpName)
 							.frame(width: 280, height: 250)
 							.scaleEffect(((isLongPressed || isShortPressed) && pressedID == card.id) ? 1.12 : 1)
-							.shadow(radius: 10)
+							.shadow(color: .black, radius: 5)
 							.offset(y: card.offset * 5)
 							.offset(draggingCard?.id == card.id ? dragAmount : .zero)
 							.onLongPressGesture(minimumDuration: 0.3) { // 长按松开后的处理
@@ -103,6 +103,7 @@ struct GrandPrixSchedulesView: View {
 			}, content: { card in
 				if let grandPrix = grandPrixSchedules?[card.roundIndex] {
 					StagesScheduleView(gpSchedule: grandPrix)
+						.presentationBackground(.ultraThinMaterial)
 						.presentationDetents([.medium, .large])
 				} else {
 					LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
