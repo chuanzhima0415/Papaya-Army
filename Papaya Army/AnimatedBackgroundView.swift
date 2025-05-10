@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AnimatedBackgroundView: View {
 	@State private var colors = MeshGradientData.randomColors()
-	private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+	private let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
 
 	var body: some View {
 		MeshGradient(width: 4, height: 4, points: MeshGradientData.points, colors: colors)
