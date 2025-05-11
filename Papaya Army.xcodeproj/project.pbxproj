@@ -33,22 +33,9 @@
 		4B223F7A2D8468AB00C30E5F /* Papaya ArmyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Papaya ArmyUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		4BA875A72DCF595900CE31E2 /* Exceptions for "Papaya Army" folder in "Papaya Army" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Papaya-Army-Info.plist",
-			);
-			target = 4B223F5F2D8468AA00C30E5F /* Papaya Army */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4B223F622D8468AA00C30E5F /* Papaya Army */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				4BA875A72DCF595900CE31E2 /* Exceptions for "Papaya Army" folder in "Papaya Army" target */,
-			);
 			path = "Papaya Army";
 			sourceTree = "<group>";
 		};

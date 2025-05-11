@@ -43,6 +43,7 @@ struct DriverStandingsView: View {
 							.navigationTitle("\(standing.driverDetailInfo.firstName) \(standing.driverDetailInfo.lastName)")
 					}
 				}
+				.safeAreaPadding(.bottom, 130) // 防止最后的那个车手被 tab bar 遮住
 				.listStyle(.plain)
 				.scrollContentBackground(.hidden)
 			} else {
@@ -59,5 +60,6 @@ struct DriverStandingsView: View {
 
 #Preview {
 //	DriverStandingsView(seasonId: "2025")
-	StandingsView(seasonId: "2025")
+//	StandingsView(seasonId: "2025")
+	TabsView(seasonId: "2025")
 }

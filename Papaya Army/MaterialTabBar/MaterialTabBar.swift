@@ -11,7 +11,7 @@ struct MaterialTabBar: View {
 	var tabs: [TabModel]
 	@Binding var selection: TabModel
 	@Binding var cards: [Card]
-	private let contentShape = RoundedRectangle(cornerRadius: 5)
+	private let contentShape = RoundedRectangle(cornerRadius: 5) // 没指定长宽高 -> 自动填充视图
 	
 	@Namespace private var namespace // For matchedGeometryEffect
 	
@@ -115,6 +115,7 @@ extension MaterialTabBar {
 					contentShape
 						.fill(tab.color.opacity(0.2))
 						.matchedGeometryEffect(id: "tabHighlighting", in: namespace)
+						// 当 selection == .standing 时，此时整个屏幕只有 standing tab 才有 matchedGeometryEffect, 因此 mtachedGeometryEffect 不用指定 isSource 是否为 true
 				}
 			}
 		}

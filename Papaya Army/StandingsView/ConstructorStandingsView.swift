@@ -56,8 +56,8 @@ struct ConstructorStandingsView: View {
 							}
 						}
 					}
-
 				}
+				.safeAreaPadding(.bottom, 130) // 防止最后的那个车队被 tab bar 遮住
 			} else {
 				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
 			}
@@ -79,6 +79,7 @@ struct ConstructorStandingsView: View {
 }
 
 #Preview {
-	ConstructorStandingsView()
+//	ConstructorStandingsView()
 //	StandingsView(seasonId: "2025")
+	TabsView(seasonId: "2025")
 }
