@@ -18,6 +18,7 @@ enum Standings: String, CaseIterable, Identifiable {
 
 struct StandingsView: View {
 	var seasonId: String
+	private let headerHeight: CGFloat = 60
 	@State private var selectedStandings: Standings = .drivers
 	var body: some View {
 		ZStack {
@@ -26,9 +27,8 @@ struct StandingsView: View {
 			VStack {
 				VStack {
 					Text("Standings")
-						.foregroundStyle(.primary)
+						.foregroundStyle(.white.opacity(0.8))
 						.font(.title.weight(.bold))
-						.ignoresSafeArea()
 					
 					Picker("Choose you standings", selection: self.$selectedStandings.animation()) {
 						ForEach(Standings.allCases) {
@@ -39,7 +39,8 @@ struct StandingsView: View {
 					.padding()
 					.frame(width: 300)
 				}
-				.padding(.top, 20)
+				.frame(maxWidth: .infinity)
+				.safeAreaPadding(.top, headerHeight)
 				
 				switch self.selectedStandings {
 				case .drivers:
@@ -53,5 +54,6 @@ struct StandingsView: View {
 }
 
 #Preview {
-	StandingsView(seasonId: "2025")
+//	StandingsView(seasonId: "2025")
+	TabsView(seasonId: "2025")
 }

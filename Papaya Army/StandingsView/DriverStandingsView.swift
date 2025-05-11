@@ -14,6 +14,7 @@ struct DriverStandingsView: View {
 	}
 
 	var seasonId: String
+	private let tabBarHeight: CGFloat = 130
 	@State private var selectedStanding: DriversStanding?
 	@State private var driverStandings: [DriversStanding]?
 	var body: some View {
@@ -43,7 +44,7 @@ struct DriverStandingsView: View {
 							.navigationTitle("\(standing.driverDetailInfo.firstName) \(standing.driverDetailInfo.lastName)")
 					}
 				}
-				.safeAreaPadding(.bottom, 130) // 防止最后的那个车手被 tab bar 遮住
+				.safeAreaPadding(.bottom, tabBarHeight) // 防止最后的那个车手被 tab bar 遮住
 				.listStyle(.plain)
 				.scrollContentBackground(.hidden)
 			} else {
