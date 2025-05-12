@@ -36,7 +36,7 @@ struct StandingsView: View {
 						}
 					}
 					.pickerStyle(.segmented)
-					.padding()
+					.padding(.top)
 					.frame(width: 300)
 				}
 				.frame(maxWidth: .infinity)
@@ -54,6 +54,6 @@ struct StandingsView: View {
 }
 
 #Preview {
-//	StandingsView(seasonId: "2025")
-	TabsView(seasonId: "2025")
+	StandingsView(seasonId: "2025")
+//	TabsView(seasonId: "2025")
 }

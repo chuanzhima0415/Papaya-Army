@@ -8,16 +8,20 @@
 import SwiftUI
 
 struct ConstructorDetailInfoView: View {
+	var constructorName: String
 	var constructorId: String
 	@State private var constructorInfo: ConstructorInfo?
     var body: some View {
-		VStack {
-			if let constructorInfo {
-				Text(constructorInfo.constructorName)
-				Text("driver championships: \(constructorInfo.driversChampionships ?? 0)")
-			} else {
-				LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
+		NavigationStack {
+			VStack {
+				if let constructorInfo {
+					Text(constructorInfo.constructorName)
+					Text("driver championships: \(constructorInfo.driversChampionships ?? 0)")
+				} else {
+					LottieView(name: .loading, animationSpeed: 0.5, loopMode: .loop)
+				}
 			}
+			.navigationTitle(constructorName)
 		}
 		.onAppear {
 			Task {
@@ -28,5 +32,5 @@ struct ConstructorDetailInfoView: View {
 }
 
 #Preview {
-	ConstructorDetailInfoView(constructorId: String("mclaren"))
+	ConstructorDetailInfoView(constructorName: "Mclaren", constructorId: String("mclaren"))
 }

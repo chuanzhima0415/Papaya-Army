@@ -19,10 +19,10 @@ struct GrandPrixSchedulesView: View {
 	@State private var grandPrixSchedules: [GrandPrixSchedule]? // 每一站的比赛信息
 	@State private var dragAmount = CGSize.zero // 拖动的坐标
 	@State private var draggingCard: Card? // 拖动的卡片
-	@State private var selectedCard: Card? // 弹 sheet 的卡片
+	@State private var selectedCard: Card? // 弹 sheet 的卡片（控制哪张卡要弹 sheet）
 	@State private var isShortPressed = false // 存有没有被短按
 	@State private var isLongPressed = false // 存有没有被长按
-	@State private var pressedID: Int? // 被按的卡片
+	@State private var pressedID: Int? // 被按的卡片(控制哪张卡要放大)
 	private var fileURL: StorageManager.FileManagers<[GrandPrixSchedule]> {
 		StorageManager.FileManagers(filename: "GrandPrixSchedules.json")
 	}

@@ -43,6 +43,8 @@ struct ConstructorStandingCardView: View {
 		ZStack {
 			RoundedRectangle(cornerRadius: 50)
 				.frame(width: 340, height: 220)
+				.frame(maxWidth: .infinity)
+				.padding(.horizontal)
 				.foregroundStyle(
 					Color(red: teamColor.red, green: teamColor.green, blue: teamColor.blue)
 				)

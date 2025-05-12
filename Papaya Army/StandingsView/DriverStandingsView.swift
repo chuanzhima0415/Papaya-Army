@@ -37,6 +37,7 @@ struct DriverStandingsView: View {
 					.listRowSeparator(.hidden)
 					.listRowBackground(Color.clear)
 				}
+				.scrollIndicators(.hidden)
 				.sheet(item: $selectedStanding) { standing in
 					NavigationStack {
 						DriverDetailInfoView(driverDetail: standing.driverDetailInfo)
@@ -61,6 +62,6 @@ struct DriverStandingsView: View {
 
 #Preview {
 //	DriverStandingsView(seasonId: "2025")
-//	StandingsView(seasonId: "2025")
-	TabsView(seasonId: "2025")
+	StandingsView(seasonId: "2025")
+//	TabsView(seasonId: "2025")
 }

@@ -29,6 +29,7 @@ struct QualifyingResultResponse: Codable {
 	}
 }
 
+
 struct Qualifying: Codable {
 	var results: [QualifyingResult]
 	
