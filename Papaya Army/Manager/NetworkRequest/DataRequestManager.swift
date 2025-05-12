@@ -216,7 +216,7 @@ struct DataRequestManager {
 		}
 		
 		do {
-			let (dataInJson, response) = try await URLSession.shared.data(from: url)
+			let (dataInJson, _) = try await URLSession.shared.data(from: url)
 			let decoder = JSONDecoder()
 			let data = try decoder.decode(ConstructorStandingsResopnse.self, from: dataInJson)
 			return data
