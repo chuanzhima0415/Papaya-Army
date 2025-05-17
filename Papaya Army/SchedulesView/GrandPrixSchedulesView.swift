@@ -108,15 +108,20 @@ struct GrandPrixSchedulesView: View {
 		})
 		.onAppear {
 			Task {
-				if let grandPrixSchedules = fileURL.loadDataFromFileManager() {
-					self.grandPrixSchedules = grandPrixSchedules
-				}
-				grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedules()
-				if grandPrixSchedules != grandPrixSchedules {
-					grandPrixSchedules = grandPrixSchedules
-					fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
-				}
+				await loadSchedules()
 			}
+		}
+	}
+
+	/// load gp schedules asyncronously
+	func loadSchedules() async {
+		if let grandPrixSchedules = fileURL.loadDataFromFileManager() {
+			self.grandPrixSchedules = grandPrixSchedules
+		}
+		grandPrixSchedules = await GrandPrixSchedulesManager.shared.retrieveGrandPrixSchedules()
+		if grandPrixSchedules != grandPrixSchedules {
+			grandPrixSchedules = grandPrixSchedules
+			fileURL.saveDataToFileManager(grandPrixSchedules ?? nil)
 		}
 	}
 
